@@ -1,9 +1,9 @@
 import Foundation
 import Observation
-import SamadhiAudio
-import SamadhiDesign
-import SamadhiDomain
-import SamadhiMotion
+import SlipstreamAudio
+import SlipstreamDesign
+import SlipstreamDomain
+import SlipstreamMotion
 import UIKit
 
 @MainActor

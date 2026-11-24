@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Keep every Samadhi run in one place and read them.
+"""Keep every Slipstream run in one place and read them.
 
   runs.py ingest <folder>   Add any run in a folder, one copy per run, then refresh the ledger
   runs.py read <file>       Summarize one run: build, cues, song changes, and what the phone did
   runs.py ledger            Print one line per run, oldest first, to see the trend
 
-Runs live in ~/Documents/Samadhi Run Records/runs, or SAMADHI_RUN_ARCHIVE/runs. They are personal,
+Runs live in ~/Documents/Slipstream Run Records/runs, or SLIPSTREAM_RUN_ARCHIVE/runs. They are personal,
 so they stay out of Git. Each run keeps its original file untouched. A later copy of the same run
 replaces an earlier one only when it holds more.
 """
@@ -18,8 +18,8 @@ import shutil
 import statistics
 import sys
 
-ARCHIVE = pathlib.Path(os.environ.get("SAMADHI_RUN_ARCHIVE",
-                                      pathlib.Path.home() / "Documents/Samadhi Run Records"))
+ARCHIVE = pathlib.Path(os.environ.get("SLIPSTREAM_RUN_ARCHIVE",
+                                      pathlib.Path.home() / "Documents/Slipstream Run Records"))
 RUNS = ARCHIVE / "runs"
 LEDGER = ARCHIVE / "ledger.csv"
 THERMAL = ["nominal", "fair", "serious", "critical"]

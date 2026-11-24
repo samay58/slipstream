@@ -1,5 +1,5 @@
-import SamadhiDesign
-import SamadhiDomain
+import SlipstreamDesign
+import SlipstreamDomain
 import SwiftUI
 
 struct RootView: View {
@@ -49,26 +49,26 @@ struct RootView: View {
             } else if ProcessInfo.processInfo.arguments.contains("--core-diagnostics") {
                 CoreLoopDiagnosticsView(presentation: runModel.coreLoopDiagnostics)
             } else {
-                samadhiScreen
+                slipstreamScreen
             }
         #else
-            samadhiScreen
+            slipstreamScreen
         #endif
     }
 
-    private var samadhiScreen: some View {
+    private var slipstreamScreen: some View {
         var state = runModel.viewState
         state.musicSelection = musicModel.presentation
         state.isChoosingMusic = musicModel.playlistSheet != nil
 
         return ZStack(alignment: .topLeading) {
-            SamadhiScreen(state: state) { action in
+            SlipstreamScreen(state: state) { action in
                 send(action)
             }
             #if DEBUG
                 // Starts a run by itself, because a test runner's snapshots stall a screen recording.
                 .task {
-                    guard ProcessInfo.processInfo.arguments.contains("-SAMADHI_RUN_DEMO") else { return }
+                    guard ProcessInfo.processInfo.arguments.contains("-SLIPSTREAM_RUN_DEMO") else { return }
                     try? await Task.sleep(for: .seconds(1.5))
                     send(.start)
                 }

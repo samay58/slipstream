@@ -23,10 +23,10 @@ collection_path="Library/Application Support/Samadhi/selected-music.json"
 record_directory="Library/Application Support/Samadhi"
 output_dir="$scratch/phone"
 # Outside the repository, because these are personal and must survive a fresh clone.
-run_archive=${SAMADHI_RUN_ARCHIVE:-$HOME/Documents/Samadhi Run Records}
-app_path="$derived_data/Build/Products/Debug-iphoneos/Samadhi.app"
+run_archive=${SLIPSTREAM_RUN_ARCHIVE:-$HOME/Documents/Slipstream Run Records}
+app_path="$derived_data/Build/Products/Debug-iphoneos/Slipstream.app"
 
-device_list=$(mktemp "${TMPDIR:-/tmp}/samadhi-devices.XXXXXX")
+device_list=$(mktemp "${TMPDIR:-/tmp}/slipstream-devices.XXXXXX")
 trap 'rm -f "$device_list"' EXIT
 
 device_field() {
@@ -38,7 +38,7 @@ phones = [d for d in devices
           if d["hardwareProperties"].get("reality") == "physical"
           and d["hardwareProperties"].get("deviceType") == "iPhone"]
 if not phones:
-    sys.exit("No paired iPhone. Connect it by cable once, or set SAMADHI_DEVICE.")
+    sys.exit("No paired iPhone. Connect it by cable once, or set SLIPSTREAM_DEVICE.")
 print({"id": phones[0]["identifier"],
        "udid": phones[0]["hardwareProperties"].get("udid", ""),
        "state": phones[0]["connectionProperties"].get("tunnelState", "unknown"),
@@ -47,8 +47,8 @@ PY
 }
 
 device_id() {
-  if [ -n "${SAMADHI_DEVICE:-}" ]; then
-    echo "$SAMADHI_DEVICE"
+  if [ -n "${SLIPSTREAM_DEVICE:-}" ]; then
+    echo "$SLIPSTREAM_DEVICE"
   else
     device_field id
   fi
@@ -81,7 +81,7 @@ PY
 }
 
 collection_checksum() {
-  copy=$(mktemp -d "${TMPDIR:-/tmp}/samadhi-collection.XXXXXX")
+  copy=$(mktemp -d "${TMPDIR:-/tmp}/slipstream-collection.XXXXXX")
   if xcrun devicectl device copy from --device "$1" --domain-type appDataContainer \
     --domain-identifier "$bundle_id" --source "$collection_path" \
     --destination "$copy/selected-music.json" >/dev/null 2>&1; then
@@ -101,7 +101,7 @@ save_run_records() {
   xcrun devicectl device copy from --device "$1" --domain-type appDataContainer \
     --domain-identifier "$bundle_id" --source "$record_directory" \
     --destination "$destination" >/dev/null
-  SAMADHI_RUN_ARCHIVE="$run_archive" python3 Scripts/runs.py ingest "$destination" >&2
+  SLIPSTREAM_RUN_ARCHIVE="$run_archive" python3 Scripts/runs.py ingest "$destination" >&2
   rm -rf "$destination/run-records" "$destination/latest-run-diagnostics.json"
   echo "$destination"
 }
@@ -121,7 +121,7 @@ case "$command" in
     if [ -n "$profile" ]; then
       echo "Exact profile: $(printf '%s' "$profile" | tr '\t' ' '), expires as shown"
     else
-      echo "Exact profile: missing or expired. MusicKit needs it. See Docs/DEVICE_RUNBOOK.md"
+      echo "Exact profile: missing or expired. MusicKit needs it. See Docs/PHONE.md"
     fi
     ;;
   install)
@@ -130,13 +130,13 @@ case "$command" in
     udid=$(device_field udid)
     profile=$(exact_profile | cut -f1)
     if [ -z "$profile" ]; then
-      echo "No unexpired profile for $application_id on this Mac. See Docs/DEVICE_RUNBOOK.md." >&2
+      echo "No unexpired profile for $application_id on this Mac. See Docs/PHONE.md." >&2
       exit 1
     fi
     if [ -n "$(git status --porcelain -- App Packages Resources Config project.yml)" ]; then
       echo "Note: building uncommitted source. The fingerprint records it."
     fi
-    xcodebuild build -project Samadhi.xcodeproj -scheme Samadhi -configuration Debug \
+    xcodebuild build -project Slipstream.xcodeproj -scheme Slipstream -configuration Debug \
       -derivedDataPath "$derived_data" -destination "id=$udid" -quiet \
       CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="Apple Development" \
       PROVISIONING_PROFILE_SPECIFIER="$profile"
@@ -169,7 +169,7 @@ case "$command" in
     else
       collection_result="unchanged: $after"
     fi
-    built=$(/usr/libexec/PlistBuddy -c 'Print :SamadhiSourceFingerprint' "$app_path/Info.plist")
+    built=$(/usr/libexec/PlistBuddy -c 'Print :SlipstreamSourceFingerprint' "$app_path/Info.plist")
     echo "Installed $(git rev-parse --short HEAD) with profile $profile."
     echo "Fingerprint $built. Read it back with: ./Scripts/phone.sh launch --core-diagnostics"
     echo "Selected collection $collection_result"
@@ -191,9 +191,9 @@ case "$command" in
     save_run_records "$device" >/dev/null
     latest=$(find "$run_archive/runs" -type f 2>/dev/null | sort | tail -1)
     if [ -n "$latest" ]; then
-      SAMADHI_RUN_ARCHIVE="$run_archive" python3 Scripts/runs.py read "$latest"
+      SLIPSTREAM_RUN_ARCHIVE="$run_archive" python3 Scripts/runs.py read "$latest"
       echo
-      SAMADHI_RUN_ARCHIVE="$run_archive" python3 Scripts/runs.py ledger
+      SLIPSTREAM_RUN_ARCHIVE="$run_archive" python3 Scripts/runs.py ledger
     else
       echo "No runs kept yet."
     fi

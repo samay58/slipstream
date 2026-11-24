@@ -1,5 +1,5 @@
 import CoreHaptics
-import SamadhiDomain
+import SlipstreamDomain
 import UIKit
 
 @MainActor

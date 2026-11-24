@@ -3,7 +3,7 @@
     import Foundation
     @preconcurrency import MusicKit
     import Observation
-    import SamadhiAudio
+    import SlipstreamAudio
     import UIKit
 
     struct FeasibilityTraceEntry: Codable, Identifiable, Sendable {

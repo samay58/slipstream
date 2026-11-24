@@ -1,0 +1,493 @@
+import SlipstreamDomain
+import SwiftUI
+
+struct RhythmControl: View {
+    let state: RunViewState
+    let mode: ApertureMode
+    let size: CGFloat
+    let send: @MainActor (RunAction) -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
+    @AppStorage("samadhi.tempoControlDiscovered") private var tempoControlDiscovered = false
+    @State private var dragOriginBPM: Int?
+    @State private var dragBPMRange: ClosedRange<Int>?
+    @State private var frozenDisplayBPM: Int?
+    @State private var rotaryTracker = RotaryDetentTracker()
+    @State private var signaledBoundary: RhythmAdjustmentDirection?
+    @State private var wheelIndicatorAngle: Double?
+    @State private var affordanceCueRotation = 0.0
+    @State private var didPresentAffordanceCue = false
+
+    var body: some View {
+        VStack(spacing: Space.x3) {
+            apertureSurface
+
+            if state.rhythmControl.isVisible {
+                adjustmentRow
+                    .transition(.opacity)
+            }
+        }
+        .animation(
+            effectiveReduceMotion ? nil : .easeOut(duration: MotionToken.control), value: state.rhythmControl.isVisible
+        )
+        // This compact direct-manipulation surface stays legible at 200 percent while VoiceOver carries full detail.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+    }
+
+    @ViewBuilder
+    private var apertureSurface: some View {
+        if state.rhythmControl.isVisible {
+            ZStack {
+                ZStack {
+                    aperture
+                        .accessibilityHidden(true)
+
+                    wheelDetents
+
+                    readout
+                        .transition(.opacity)
+
+                    wheelIndicator
+                }
+                .frame(width: size, height: size)
+                .contentShape(Circle())
+                .gesture(adjustmentGesture)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(accessibilityLabel)
+                .accessibilityValue(accessibilityValue)
+                .accessibilityHint("Swipe up or down to adjust by one beat per minute")
+                .accessibilityAdjustableAction { direction in
+                    switch direction {
+                    case .increment:
+                        commitAccessibleChange(1)
+                    case .decrement:
+                        commitAccessibleChange(-1)
+                    @unknown default:
+                        break
+                    }
+                }
+                .accessibilityIdentifier("rhythm-dial")
+            }
+            .frame(width: size, height: size)
+            .overlay(alignment: .topTrailing) {
+                Button(action: dismiss) {
+                    ZStack {
+                        Circle()
+                            .fill(
+                                SlipstreamColor.paper.opacity(
+                                    effectiveIncreasedContrast ? 0.36 : 0.08
+                                )
+                            )
+                            .frame(width: 24, height: 24)
+
+                        Image(systemName: "xmark")
+                            .font(.system(size: 11.5, weight: .medium))
+                            .foregroundStyle(
+                                SlipstreamColor.ink.opacity(
+                                    effectiveIncreasedContrast ? 1 : 0.9
+                                )
+                            )
+                            .offset(y: -0.25)
+                    }
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(QuietCloseButtonStyle(reduceMotion: effectiveReduceMotion))
+                .offset(x: Space.x3, y: -Space.x3)
+                .accessibilityLabel("Close tempo control")
+                .accessibilityHint("Returns to playback controls")
+                .accessibilityIdentifier("close-rhythm-control")
+                .accessibilitySortPriority(1)
+            }
+        } else {
+            Button(action: reveal) {
+                ZStack {
+                    aperture
+                    restingAffordance
+                    restingLabel
+                }
+                .frame(width: size, height: size)
+                .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Tempo control")
+            .accessibilityHint(
+                state.rhythmControl.isAvailable
+                    ? "Opens automatic and manual tempo adjustment"
+                    : "Shows playback controls"
+            )
+            .accessibilityIdentifier("tempo-control")
+            .task(id: shouldPresentAffordanceCue) {
+                await presentAffordanceCue()
+            }
+        }
+    }
+
+    private var aperture: some View {
+        TempoAperture(
+            mode: mode,
+            tempoBPM: state.rhythmControl.appliedBPM,
+            progress: state.trackProgress,
+            reduceMotionOverride: state.forceReduceMotion,
+            increasedContrastOverride: state.forceIncreasedContrast,
+            showsReadout: state.rhythmControl.isVisible
+        )
+    }
+
+    private var readout: some View {
+        VStack(spacing: Space.x1) {
+            Text(modeLabel)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(modeTint)
+
+            HStack(alignment: .firstTextBaseline, spacing: Space.x1) {
+                Text(displayBPM.map(String.init) ?? "--")
+                    .font(.system(size: 46, weight: .medium, design: .rounded).monospacedDigit())
+                Text("BPM")
+                    .font(.caption.weight(.bold))
+            }
+
+            Text(feedbackLabel)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(
+                    state.rhythmControl.isAtLimit
+                        ? SlipstreamColor.ink
+                        : SlipstreamColor.ink.opacity(0.96)
+                )
+                .shadow(color: SlipstreamColor.paper.opacity(0.55), radius: 3, y: 1)
+                .lineLimit(1)
+        }
+    }
+
+    @ViewBuilder
+    private var wheelIndicator: some View {
+        if let wheelIndicatorAngle {
+            Capsule()
+                .fill(modeTint)
+                .frame(width: 3, height: 18)
+                .offset(y: -(size * 0.41))
+                .rotationEffect(.radians(wheelIndicatorAngle + .pi / 2))
+                .transition(.opacity)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var wheelDetents: some View {
+        ZStack {
+            ForEach(0..<RotaryDetentTracker.detentsPerRevolution, id: \.self) { index in
+                let isMajor = index.isMultiple(of: 5)
+                Capsule()
+                    .fill(
+                        SlipstreamColor.ink.opacity(isMajor ? 0.46 : 0.2)
+                    )
+                    .frame(width: isMajor ? 2 : 1, height: isMajor ? 9 : 5)
+                    .offset(y: -(size * 0.445))
+                    .rotationEffect(
+                        .degrees(
+                            Double(index) * (360 / Double(RotaryDetentTracker.detentsPerRevolution))
+                        )
+                    )
+            }
+        }
+        .accessibilityHidden(true)
+    }
+
+    private var restingAffordance: some View {
+        ZStack {
+            ForEach(-1...1, id: \.self) { index in
+                Capsule()
+                    .fill(
+                        SlipstreamColor.ink.opacity(index == 0 ? 0.56 : 0.3)
+                    )
+                    .frame(width: index == 0 ? 2 : 1, height: index == 0 ? 8 : 5)
+                    .offset(y: -(size * 0.445))
+                    .rotationEffect(.degrees(118 + Double(index) * 8))
+            }
+        }
+        .rotationEffect(.degrees(affordanceCueRotation))
+        .opacity(state.rhythmControl.isAvailable && mode == .locked ? 1 : 0)
+        .animation(effectiveReduceMotion ? nil : .easeOut(duration: 0.3), value: mode)
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var restingLabel: some View {
+        if state.rhythmControl.isAvailable, mode == .locked {
+            Text("Turn")
+                .font(.caption.weight(.semibold))
+                .tracking(0.6)
+                .foregroundStyle(SlipstreamColor.ink.opacity(0.96))
+                .shadow(color: SlipstreamColor.paper.opacity(0.55), radius: 3, y: 1)
+                .offset(y: size * 0.365)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var adjustmentRow: some View {
+        HStack(spacing: Space.x3) {
+            modeButton("Auto", isSelected: state.rhythmControl.mode == .automatic) {
+                send(.resetRhythmControl)
+            }
+            .accessibilityIdentifier("rhythm-auto")
+            .accessibilityAddTraits(
+                state.rhythmControl.mode == .automatic ? .isSelected : []
+            )
+
+            Rectangle()
+                .fill(SlipstreamColor.ink.opacity(0.34))
+                .frame(width: 1, height: 18)
+                .accessibilityHidden(true)
+
+            modeButton("Manual", isSelected: state.rhythmControl.mode == .manual) {
+                send(.useManualRhythm)
+            }
+            .accessibilityIdentifier("rhythm-manual")
+            .accessibilityAddTraits(
+                state.rhythmControl.mode == .manual ? .isSelected : []
+            )
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(SlipstreamColor.ink)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("rhythm-controls")
+    }
+
+    // The weight stays the same in both states, so choosing one never nudges the other. Each button
+    // fills the row, because a hand on the move misses a target the size of the word.
+    private func modeButton(
+        _ title: String,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.callout.weight(.semibold))
+                .foregroundStyle(
+                    isSelected ? modeTint : SlipstreamColor.ink.opacity(effectiveIncreasedContrast ? 0.84 : 0.62)
+                )
+                .frame(minWidth: 84, minHeight: 48)
+                .contentShape(Rectangle())
+        }
+    }
+
+    private var adjustmentGesture: some Gesture {
+        DragGesture(minimumDistance: 2, coordinateSpace: .local)
+            .onChanged { value in
+                guard state.rhythmControl.isVisible else { return }
+                let center = CGPoint(x: size / 2, y: size / 2)
+                let x = value.location.x - center.x
+                let y = value.location.y - center.y
+                let angle = atan2(y, x)
+                let startX = value.startLocation.x - center.x
+                let startY = value.startLocation.y - center.y
+                let startRadius = hypot(startX, startY)
+                let startAngle = atan2(startY, startX)
+
+                guard rotaryTracker.isTracking || startRadius >= size * 0.28 else { return }
+                guard rotaryTracker.isTracking else {
+                    let range = activeBPMRange
+                    let seed = range.clamped(
+                        state.rhythmControl.achievableBPM
+                            ?? displayBPM
+                            ?? state.rhythmControl.manualTargetBPM
+                    )
+                    dragOriginBPM = seed
+                    dragBPMRange = range
+                    frozenDisplayBPM = seed
+                    signaledBoundary = nil
+                    rotaryTracker.begin(
+                        at: startAngle,
+                        detentRange: (range.lowerBound - seed)...(range.upperBound - seed)
+                    )
+                    send(.controlsInteractionChanged(true))
+                    _ = rotaryTracker.update(to: angle)
+                    wheelIndicatorAngle = rotaryTracker.indicatorAngle
+                    applyTrackedDetent()
+                    return
+                }
+
+                _ = rotaryTracker.update(to: angle)
+                wheelIndicatorAngle = rotaryTracker.indicatorAngle
+                applyTrackedDetent()
+            }
+            .onEnded { _ in
+                let committedBPM = frozenDisplayBPM
+                let originBPM = dragOriginBPM
+                dragOriginBPM = nil
+                dragBPMRange = nil
+                frozenDisplayBPM = nil
+                signaledBoundary = nil
+                rotaryTracker.reset()
+                withAnimation(effectiveReduceMotion ? nil : .easeOut(duration: MotionToken.control)) {
+                    wheelIndicatorAngle = nil
+                }
+                if let committedBPM, committedBPM != originBPM {
+                    send(.commitRhythmTarget(committedBPM))
+                }
+                send(.controlsInteractionChanged(false))
+            }
+    }
+
+    private var displayBPM: Int? {
+        frozenDisplayBPM ?? state.rhythmControl.requestedBPM
+    }
+
+    // Lime while Auto follows the runner, lilac once the runner has taken over.
+    private var modeTint: Color {
+        state.rhythmControl.mode == .manual ? SlipstreamColor.lilac : SlipstreamColor.lime
+    }
+
+    private var modeLabel: String {
+        switch state.rhythmControl.mode {
+        case .automatic:
+            let correction = state.rhythmControl.automaticCorrectionBPM
+            guard correction != 0 else { return "Auto" }
+            return correction > 0 ? "Auto +\(correction)" : "Auto \(correction)"
+        case .manual:
+            return "Manual"
+        }
+    }
+
+    private var accessibilityLabel: String {
+        state.rhythmControl.mode == .automatic ? "Automatic tempo target" : "Manual tempo target"
+    }
+
+    private var accessibilityValue: String {
+        let target = displayBPM.map { "\($0) beats per minute" } ?? "Waiting for cadence"
+        let applied = state.rhythmControl.appliedBPM.map { ", music at \($0) beats per minute" } ?? ""
+        let fit =
+            state.rhythmControl.isFindingBetterFit
+            ? ", finding a better fitting song"
+            : (state.rhythmControl.isAtLimit ? ", music holding steady" : "")
+        return target + applied + fit
+    }
+
+    private var feedbackLabel: String {
+        switch state.rhythmControl.commandStatus {
+        case .unreachable:
+            return "Limit"
+        case .rejected:
+            return "Not applied"
+        case .applying:
+            return "Settling"
+        case .applied:
+            if let applied = state.rhythmControl.appliedBPM { return "Music \(applied)" }
+            return "Applied"
+        case .idle:
+            break
+        }
+        if state.rhythmControl.isFindingBetterFit { return "Music steady" }
+        return state.rhythmControl.appliedBPM.map { "Music \($0)" } ?? "Settling"
+    }
+
+    private var effectiveReduceMotion: Bool {
+        reduceMotion || state.forceReduceMotion
+    }
+
+    private var effectiveIncreasedContrast: Bool {
+        colorSchemeContrast == .increased || state.forceIncreasedContrast
+    }
+
+    private var shouldPresentAffordanceCue: Bool {
+        mode == .locked && state.rhythmControl.isAvailable && !tempoControlDiscovered
+            && !effectiveReduceMotion
+    }
+
+    @MainActor
+    private func presentAffordanceCue() async {
+        guard shouldPresentAffordanceCue, !didPresentAffordanceCue else { return }
+        didPresentAffordanceCue = true
+
+        do {
+            try await Task.sleep(for: .milliseconds(450))
+            withAnimation(.easeInOut(duration: 0.42)) {
+                affordanceCueRotation = 7
+            }
+            try await Task.sleep(for: .milliseconds(420))
+            withAnimation(.easeInOut(duration: 0.42)) {
+                affordanceCueRotation = -5
+            }
+            try await Task.sleep(for: .milliseconds(420))
+            withAnimation(.easeOut(duration: 0.3)) {
+                affordanceCueRotation = 0
+            }
+        } catch {
+            affordanceCueRotation = 0
+        }
+    }
+
+    private func reveal() {
+        guard state.rhythmControl.isAvailable else {
+            // Tapping anywhere else on the run screen shows the controls, so the wheel does too.
+            if state.phase == .acquiring, !state.controlsVisible { send(.revealControls) }
+            return
+        }
+        tempoControlDiscovered = true
+        if !state.rhythmControl.isVisible { send(.revealRhythmControl) }
+        if voiceOverEnabled { send(.controlsInteractionChanged(true)) }
+    }
+
+    private func dismiss() {
+        guard state.rhythmControl.isVisible else { return }
+        send(.dismissRhythmControl)
+    }
+
+    // Frozen at finger-down so the reachable range cannot shift under a gesture in progress.
+    private var activeBPMRange: ClosedRange<Int> {
+        dragBPMRange ?? state.rhythmControl.manualBPMRange ?? TempoEnvelope.locomotionCadenceRange
+    }
+
+    private func boundedDisplayBPM(_ bpm: Int) -> Int {
+        activeBPMRange.clamped(bpm)
+    }
+
+    private func applyTrackedDetent() {
+        let origin = dragOriginBPM ?? 168
+        let nextDisplayBPM = boundedDisplayBPM(origin + rotaryTracker.currentDetent)
+        let change = nextDisplayBPM - (frozenDisplayBPM ?? origin)
+        if let boundary = rotaryTracker.boundaryDirection {
+            if signaledBoundary != boundary {
+                signaledBoundary = boundary
+                send(.previewRhythmLimit)
+            }
+        } else {
+            signaledBoundary = nil
+        }
+        guard change != 0 else { return }
+        frozenDisplayBPM = nextDisplayBPM
+
+        let step = change > 0 ? 1 : -1
+        let direction: RhythmAdjustmentDirection = step > 0 ? .increase : .decrease
+        for offset in 1...abs(change) {
+            let value = (frozenDisplayBPM ?? origin) - change + (step * offset)
+            send(.previewRhythmStep(direction: direction, isMajor: value.isMultiple(of: 5)))
+        }
+    }
+
+    private func commitAccessibleChange(_ step: Int) {
+        guard let current = displayBPM else { return }
+        send(.commitRhythmTarget(boundedDisplayBPM(current + step)))
+    }
+}
+
+private struct QuietCloseButtonStyle: ButtonStyle {
+    let reduceMotion: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.96 : 1)
+            .opacity(configuration.isPressed ? 0.7 : 1)
+            .animation(
+                reduceMotion ? nil : .easeOut(duration: 0.12),
+                value: configuration.isPressed
+            )
+    }
+}
+
+private extension ClosedRange where Bound == Int {
+    func clamped(_ value: Int) -> Int {
+        Swift.min(Swift.max(value, lowerBound), upperBound)
+    }
+}

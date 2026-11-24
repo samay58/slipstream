@@ -1,7 +1,7 @@
 import Foundation
 @preconcurrency import MusicKit
-import SamadhiAudio
-import SamadhiDomain
+import SlipstreamAudio
+import SlipstreamDomain
 
 struct LibraryPlaylistChoice: Identifiable, Sendable, Equatable {
     let id: String
@@ -36,15 +36,7 @@ actor MusicImportDiagnosticsStore {
     private let fileURL: URL
 
     init(directoryURL: URL? = nil) {
-        let directory =
-            directoryURL
-            ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first?
-            .appending(path: "Samadhi", directoryHint: .isDirectory)
-            ?? FileManager.default.temporaryDirectory.appending(
-                path: "Samadhi",
-                directoryHint: .isDirectory
-            )
+        let directory = directoryURL ?? PhoneDataFolder.url
         self.directoryURL = directory
         fileURL = directory.appending(path: "latest-import-diagnostics.json")
     }

@@ -20,9 +20,9 @@ matches() {
 package=false
 screens=false
 interface=false
-matches '^Packages/SamadhiKit/(Sources|Tests|Tools|Package)' && package=true
-matches '^(Packages/SamadhiKit/Sources/SamadhiDesign|App|Resources|Config|project.yml|Tests/SamadhiTests)' && screens=true
-matches '^Tests/SamadhiUITests' && interface=true
+matches '^Packages/SlipstreamKit/(Sources|Tests|Tools|Package)' && package=true
+matches '^(Packages/SlipstreamKit/Sources/SlipstreamDesign|App|Resources|Config|project.yml|Tests/SlipstreamTests)' && screens=true
+matches '^Tests/SlipstreamUITests' && interface=true
 
 if ! $package && ! $screens && ! $interface; then
   echo "Only docs or other files changed, so there is nothing to test."
@@ -31,7 +31,7 @@ fi
 
 if matches '\.swift$'; then
   lint_output=$(xcrun swift-format lint --configuration .swift-format --recursive \
-    App Packages/SamadhiKit/Sources Packages/SamadhiKit/Tests Tests 2>&1) || true
+    App Packages/SlipstreamKit/Sources Packages/SlipstreamKit/Tests Tests 2>&1) || true
   if [ -n "$lint_output" ]; then
     echo "$lint_output" >&2
     exit 1
@@ -41,7 +41,7 @@ fi
 
 if $package; then
   # GitHub's older compiler gives up on expressions that this one accepts, so catch them here.
-  slow=$(swift build --package-path Packages/SamadhiKit --scratch-path .build/typecheck \
+  slow=$(swift build --package-path Packages/SlipstreamKit --scratch-path .build/typecheck \
     -Xswiftc -Xfrontend -Xswiftc -warn-long-expression-type-checking=500 2>&1 |
     grep "expression took" || true)
   if [ -n "$slow" ]; then
@@ -49,19 +49,19 @@ if $package; then
     echo "Split these expressions. GitHub's older compiler can fail on them." >&2
     exit 1
   fi
-  swift test --package-path Packages/SamadhiKit
+  swift test --package-path Packages/SlipstreamKit
 fi
 
 if $screens; then
   ensure_simulator
-  xcodebuild_serial test -scheme Samadhi -destination "$simulator_destination" \
-    -only-testing:SamadhiTests -quiet
+  xcodebuild_serial test -scheme Slipstream -destination "$simulator_destination" \
+    -only-testing:SlipstreamTests -quiet
 fi
 
 if $interface; then
   ensure_simulator
-  xcodebuild_interface_tests -scheme Samadhi -destination "$simulator_destination" \
-    -only-testing:SamadhiUITests -quiet
+  xcodebuild_interface_tests -scheme Slipstream -destination "$simulator_destination" \
+    -only-testing:SlipstreamUITests -quiet
 fi
 
 echo "Check passed: package $package, screens $screens, interface $interface."

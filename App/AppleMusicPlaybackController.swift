@@ -1,8 +1,8 @@
 import AVFoundation
 // MusicKit's player stays main-actor owned until its async APIs carry complete sendability.
 @preconcurrency import MusicKit
-import SamadhiAudio
-import SamadhiDomain
+import SlipstreamAudio
+import SlipstreamDomain
 
 @MainActor
 final class AppleMusicPlaybackController: MusicPlaybackProviding {

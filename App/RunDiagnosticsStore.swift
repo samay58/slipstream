@@ -1,6 +1,6 @@
 import Foundation
-import SamadhiDomain
-import SamadhiMotion
+import SlipstreamDomain
+import SlipstreamMotion
 
 // One batch of a run's record. It holds only what is new since the last batch, because the store
 // adds to the file instead of rewriting it.
@@ -335,15 +335,7 @@ actor RunDiagnosticsStore {
     }
 
     init(directoryURL: URL? = nil, runLimit: Int = 60) {
-        let directory =
-            directoryURL
-            ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first?
-            .appending(path: "Samadhi", directoryHint: .isDirectory)
-            ?? FileManager.default.temporaryDirectory.appending(
-                path: "Samadhi",
-                directoryHint: .isDirectory
-            )
+        let directory = directoryURL ?? PhoneDataFolder.url
         recordsURL = directory.appending(path: "run-records", directoryHint: .isDirectory)
         self.runLimit = runLimit
         encoder = JSONEncoder()

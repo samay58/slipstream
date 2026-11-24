@@ -1,7 +1,7 @@
 import Foundation
-import SamadhiDomain
+import SlipstreamDomain
 
-// MusicKit reports that the current entry changed, never why. Samadhi claims a reason around its
+// MusicKit reports that the current entry changed, never why. Slipstream claims a reason around its
 // own Previous and Next commands. Everything else is judged by where the previous song was: close
 // to its end is a natural boundary, anywhere else is an outside change we cannot explain.
 enum TrackChangeAttribution {

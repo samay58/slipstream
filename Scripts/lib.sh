@@ -22,7 +22,7 @@ if [ -z "${DEVELOPER_DIR:-}" ]; then
   esac
 fi
 
-simulator_name=${SAMADHI_SIMULATOR:-iPhone 17 Pro}
+simulator_name=${SLIPSTREAM_SIMULATOR:-iPhone 17 Pro}
 simulator_destination="platform=iOS Simulator,name=$simulator_name,OS=latest"
 derived_data=.build/xcode
 scratch=Evidence/Temp
@@ -31,7 +31,7 @@ scratch=Evidence/Temp
 # stays serial, because two Xcode actions sharing one Simulator can stop each other.
 xcodebuild_interface_tests() {
   xcodebuild test "$@" \
-    -project Samadhi.xcodeproj \
+    -project Slipstream.xcodeproj \
     -derivedDataPath "$derived_data" \
     -parallel-testing-enabled YES \
     -parallel-testing-worker-count 4 \
@@ -41,7 +41,7 @@ xcodebuild_interface_tests() {
 
 xcodebuild_serial() {
   xcodebuild "$@" \
-    -project Samadhi.xcodeproj \
+    -project Slipstream.xcodeproj \
     -derivedDataPath "$derived_data" \
     -parallel-testing-enabled NO \
     CODE_SIGNING_ALLOWED=NO

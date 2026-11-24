@@ -1,6 +1,6 @@
-import SamadhiAudio
-import SamadhiDesign
-import SamadhiDomain
+import SlipstreamAudio
+import SlipstreamDesign
+import SlipstreamDomain
 
 enum AppMusicCollection {
     static let simulated = MusicCollection(

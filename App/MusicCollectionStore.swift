@@ -1,5 +1,5 @@
 import Foundation
-import SamadhiDomain
+import SlipstreamDomain
 
 actor MusicCollectionStore {
     private struct CacheRecord: Codable {
@@ -18,23 +18,7 @@ actor MusicCollectionStore {
     private let fileURL: URL
 
     init(directoryURL: URL? = nil) {
-        let directory: URL
-        if let directoryURL {
-            directory = directoryURL
-        } else if let applicationSupport = FileManager.default.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        ).first {
-            directory = applicationSupport.appending(
-                path: "Samadhi",
-                directoryHint: .isDirectory
-            )
-        } else {
-            directory = FileManager.default.temporaryDirectory.appending(
-                path: "Samadhi",
-                directoryHint: .isDirectory
-            )
-        }
+        let directory = directoryURL ?? PhoneDataFolder.url
         self.directoryURL = directory
         fileURL = directory.appending(path: "selected-music.json")
     }

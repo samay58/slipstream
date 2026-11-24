@@ -1,5 +1,5 @@
 #if DEBUG
-    import SamadhiDomain
+    import SlipstreamDomain
     import SwiftUI
     import UIKit
 

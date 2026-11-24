@@ -1,18 +1,18 @@
-name: Samadhi
+name: Slipstream
 options:
   bundleIdPrefix: com.samaydhawan
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
 packages:
-  SamadhiKit:
-    path: Packages/SamadhiKit
+  SlipstreamKit:
+    path: Packages/SlipstreamKit
 settings:
   base:
     SWIFT_VERSION: 6.0
     DEVELOPMENT_TEAM: ZL5U59XBJ6
 targets:
-  Samadhi:
+  Slipstream:
     type: application
     platform: iOS
     sources:
@@ -28,21 +28,21 @@ targets:
         type: folder
         buildPhase: resources
     dependencies:
-      - package: SamadhiKit
-        product: SamadhiDomain
-      - package: SamadhiKit
-        product: SamadhiDesign
-      - package: SamadhiKit
-        product: SamadhiMotion
-      - package: SamadhiKit
-        product: SamadhiAudio
+      - package: SlipstreamKit
+        product: SlipstreamDomain
+      - package: SlipstreamKit
+        product: SlipstreamDesign
+      - package: SlipstreamKit
+        product: SlipstreamMotion
+      - package: SlipstreamKit
+        product: SlipstreamAudio
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.samaydhawan.Samadhi
-        PRODUCT_NAME: Samadhi
+        PRODUCT_NAME: Slipstream
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: Config/Samadhi-Info.plist
+        INFOPLIST_FILE: Config/Slipstream-Info.plist
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
     preBuildScripts:
@@ -56,67 +56,67 @@ targets:
           "$SRCROOT/Scripts/embed-build-identity.sh"
         inputFiles:
           - "$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)"
-          - "$(DERIVED_FILE_DIR)/SamadhiSourceFingerprint.txt"
+          - "$(DERIVED_FILE_DIR)/SlipstreamSourceFingerprint.txt"
         basedOnDependencyAnalysis: false
-  SamadhiTests:
+  SlipstreamTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - Tests/SamadhiTests
+      - Tests/SlipstreamTests
     dependencies:
-      - target: Samadhi
-      - package: SamadhiKit
-        product: SamadhiDomain
+      - target: Slipstream
+      - package: SlipstreamKit
+        product: SlipstreamDomain
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.samaydhawan.SamadhiTests
         GENERATE_INFOPLIST_FILE: YES
-  SamadhiUITests:
+  SlipstreamUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
-      - Tests/SamadhiUITests
+      - Tests/SlipstreamUITests
     dependencies:
-      - target: Samadhi
+      - target: Slipstream
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.samaydhawan.SamadhiUITests
         GENERATE_INFOPLIST_FILE: YES
 schemes:
-  Samadhi:
+  Slipstream:
     build:
       targets:
-        Samadhi: all
-        SamadhiTests: [test]
-        SamadhiUITests: [test]
+        Slipstream: all
+        SlipstreamTests: [test]
+        SlipstreamUITests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
-        - SamadhiTests
-        - name: SamadhiUITests
+        - SlipstreamTests
+        - name: SlipstreamUITests
           parallelizable: true
-  Samadhi MusicKit Gate:
+  Slipstream MusicKit Gate:
     build:
       targets:
-        Samadhi: all
+        Slipstream: all
     run:
       config: Debug
       commandLineArguments:
         "--music-feasibility": true
-  Samadhi Apple Music Core Loop:
+  Slipstream Apple Music Core Loop:
     build:
       targets:
-        Samadhi: all
+        Slipstream: all
     run:
       config: Debug
       commandLineArguments:
         "--apple-music-core-loop": true
-  Samadhi Feedback Audition:
+  Slipstream Feedback Audition:
     build:
       targets:
-        Samadhi: all
+        Slipstream: all
     run:
       config: Debug
       commandLineArguments:

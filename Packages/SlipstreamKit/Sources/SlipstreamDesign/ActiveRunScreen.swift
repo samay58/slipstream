@@ -1,0 +1,291 @@
+import SwiftUI
+
+struct ActiveRunScreen: View {
+    let state: RunViewState
+    let send: @MainActor (RunAction) -> Void
+
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    // Grows with the text it reserves room for, so controls stay put at every text size.
+    @ScaledMetric(relativeTo: .callout) private var statusRowHeight: CGFloat = 52
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: Space.x4) {
+                BrandMark()
+                    .frame(width: 38, height: 28)
+                    .padding(.top, Space.x6)
+
+                Spacer(minLength: Space.x3)
+
+                RhythmControl(
+                    state: state,
+                    mode: apertureMode,
+                    size: apertureSize,
+                    send: send
+                )
+
+                RunStatus(state: state)
+                    .frame(minHeight: reservesStatusRow ? statusRowHeight : 4)
+                    .padding(.horizontal, showsStatus ? Space.x4 : 0)
+                    .background {
+                        if showsStatusWell {
+                            Ellipse()
+                                .fill(SlipstreamColor.paper.opacity(0.38))
+                                .frame(width: 210, height: 70)
+                                .blur(radius: 24)
+                        }
+                    }
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
+
+                runDetails
+
+                Spacer(minLength: Space.x6)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, Space.x6)
+        }
+        .scrollIndicators(.hidden)
+        .contentShape(Rectangle())
+        // The full surface reveals low-attention controls; VoiceOver gets the same action without a tap target hunt.
+        .onTapGesture(perform: showControls)
+        .accessibilityAction(named: "Show controls", showControls)
+        .accessibilityIdentifier("run-screen")
+    }
+
+    private var runDetails: some View {
+        VStack(spacing: Space.x3) {
+            TrackIdentity(track: state.track)
+
+            Text(RunDurationText.formatted(state.trackElapsedSeconds))
+                .font(.callout.monospacedDigit().weight(.semibold))
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                .foregroundStyle(SlipstreamColor.ink.opacity(0.82))
+                .accessibilityLabel(
+                    "Song position, \(RunDurationText.spoken(state.trackElapsedSeconds))"
+                )
+
+            if transportControlsVisible || state.phase == .confirmingFinish {
+                // Transport keeps its place while Finish is armed so the hold control does not
+                // jump into its slot. It dims instead of vanishing, so the armed state reads as
+                // focus on one control rather than a hole in the layout.
+                TransportControls(state: state, send: send)
+                    .opacity(state.phase == .confirmingFinish ? 0.32 : 1)
+                    .allowsHitTesting(state.phase != .confirmingFinish)
+                    .accessibilityHidden(state.phase == .confirmingFinish)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+            }
+
+            finishControl
+                .padding(.top, Space.x2)
+        }
+        .padding(.horizontal, Space.x4)
+        .padding(.vertical, Space.x4)
+        .frame(maxWidth: 368)
+        .background {
+            // A gradient rather than a blurred shape, because this grows when the controls come up and
+            // a blur this wide would be redrawn on every frame of that.
+            EllipticalGradient(
+                stops: [
+                    .init(color: SlipstreamColor.paper.opacity(1), location: 0),
+                    .init(color: SlipstreamColor.paper.opacity(0.92), location: 0.3),
+                    .init(color: SlipstreamColor.paper.opacity(0.55), location: 0.62),
+                    .init(color: SlipstreamColor.paper.opacity(0.16), location: 0.86),
+                    .init(color: .clear, location: 1),
+                ]
+            )
+            .frame(width: 620, height: 470)
+            .scaleEffect(y: transportControlsVisible ? 1 : 0.66)
+            .opacity(transportControlsVisible ? 0.56 : 0.42)
+            .allowsHitTesting(false)
+        }
+    }
+
+    @ViewBuilder
+    private var finishControl: some View {
+        if transportControlsVisible || state.phase == .confirmingFinish {
+            FinishControl(
+                armed: state.phase == .confirmingFinish,
+                send: send,
+                reduceMotionOverride: state.forceReduceMotion,
+                increasedContrastOverride: state.forceIncreasedContrast
+            )
+            .transition(.opacity)
+        }
+    }
+
+    private var transportControlsVisible: Bool {
+        state.controlsVisible || state.phase == .paused
+    }
+
+    private var apertureMode: ApertureMode {
+        switch state.phase {
+        case .preparing, .acquiring:
+            .acquiring
+        case .running:
+            .locked
+        case .paused:
+            .paused
+        case .confirmingFinish, .finishing:
+            .interrupted
+        default:
+            .interrupted
+        }
+    }
+
+    // The status row holds its height while Finish is armed, but the well and the line only
+    // appear once the hold is actually pressing.
+    private var showsStatusWell: Bool {
+        if state.phase == .confirmingFinish { return state.finishHoldPressing }
+        return showsStatus
+    }
+
+    // While the controls are up, a status line appearing or leaving must not move them. A runner's
+    // thumb is already on its way to Pause or Finish when the state changes.
+    private var reservesStatusRow: Bool {
+        showsStatus || keepsControlLayout
+    }
+
+    private var keepsControlLayout: Bool {
+        transportControlsVisible || state.phase == .confirmingFinish || state.phase == .finishing
+    }
+
+    private var showsStatus: Bool {
+        switch state.phase {
+        case .preparing, .acquiring, .paused, .confirmingFinish, .finishing:
+            true
+        case .running:
+            state.showLockBrief || state.reachNotice != nil
+        default:
+            false
+        }
+    }
+
+    private var apertureSize: CGFloat {
+        if dynamicTypeSize.isAccessibilitySize {
+            if state.rhythmControl.isVisible { return 228 }
+            return keepsControlLayout ? 216 : 250
+        }
+        return state.rhythmControl.isVisible || keepsControlLayout ? 244 : 286
+    }
+
+    private func showControls() {
+        guard state.phase == .running || state.phase == .acquiring else { return }
+        guard !state.rhythmControl.isVisible else { return }
+        send(.revealControls)
+        if voiceOverEnabled { send(.controlsInteractionChanged(true)) }
+    }
+
+}
+
+private struct RunStatus: View {
+    let state: RunViewState
+
+    @ViewBuilder
+    var body: some View {
+        switch state.phase {
+        case .preparing:
+            statusText("Preparing your music")
+        case .acquiring:
+            statusText("Listening for your stride")
+        case .running where state.reachNotice != nil && !state.showLockBrief:
+            ReachNoticeLine(
+                notice: state.reachNotice,
+                increasedContrastOverride: state.forceIncreasedContrast
+            )
+        case .running where state.showLockBrief:
+            VStack(spacing: Space.x1) {
+                Text("Tempo matched")
+                    .font(.callout.weight(.semibold))
+                if let cadence = state.cadenceSPM {
+                    HStack(alignment: .firstTextBaseline, spacing: Space.x2) {
+                        Text("\(cadence)")
+                            .font(.title2.monospacedDigit().weight(.bold))
+                        Text("steps per minute")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(SlipstreamColor.ink.opacity(0.8))
+                    }
+                }
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(lockBriefLabel)
+            .accessibilityIdentifier("cadence-lock")
+        case .paused:
+            statusText("Paused", font: .headline)
+        case .confirmingFinish:
+            if state.finishHoldPressing {
+                statusText("Keep holding to finish")
+            } else {
+                Color.clear.frame(height: 1)
+            }
+        case .finishing:
+            statusText("Finishing")
+        default:
+            Color.clear.frame(height: 1)
+        }
+    }
+
+    private var lockBriefLabel: String {
+        guard let cadence = state.cadenceSPM else { return "Tempo matched" }
+        return "Tempo matched at \(cadence) steps per minute"
+    }
+
+    private func statusText(_ text: String, font: Font = .callout.weight(.semibold)) -> some View {
+        Text(text)
+            .font(font)
+            .accessibilityIdentifier("run-status")
+    }
+}
+
+// One quiet sentence in the status slot, the same place the lock brief lives, so the screen stays
+// one object. The shell takes it down on its own after a few seconds; nothing here moves, so
+// Reduce Motion has nothing to reduce.
+private struct ReachNoticeLine: View {
+    let notice: ReachNoticePresentation?
+    let increasedContrastOverride: Bool
+
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+
+    var body: some View {
+        Text(notice?.text ?? "")
+            .font(.callout.weight(.medium))
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .foregroundStyle(SlipstreamColor.ink.opacity(increasedContrast ? 1 : 0.9))
+            .multilineTextAlignment(.center)
+            .lineLimit(3)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: 300)
+            .accessibilityIdentifier("reach-notice")
+    }
+
+    private var increasedContrast: Bool {
+        colorSchemeContrast == .increased || increasedContrastOverride
+    }
+}
+
+private struct TrackIdentity: View {
+    let track: TrackMetadata
+
+    // Scales with the artist line below it, so the song name stays the larger of the two.
+    @ScaledMetric(relativeTo: .title) private var titleSize: CGFloat = 29
+
+    var body: some View {
+        VStack(spacing: Space.x1) {
+            Text(track.title)
+                .font(.system(size: min(titleSize, 44), weight: .medium, design: .serif))
+                .tracking(-0.35)
+                .lineLimit(3)
+            Text(track.artist)
+                .font(.body.weight(.medium))
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .foregroundStyle(SlipstreamColor.ink.opacity(0.82))
+                .lineLimit(2)
+        }
+        .multilineTextAlignment(.center)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(track.title), by \(track.artist)")
+        .accessibilityIdentifier("track-identity")
+    }
+}

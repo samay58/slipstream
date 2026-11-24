@@ -1,8 +1,8 @@
 import Foundation
 import Observation
-import SamadhiAudio
-import SamadhiDesign
-import SamadhiDomain
+import SlipstreamAudio
+import SlipstreamDesign
+import SlipstreamDomain
 
 struct PlaylistSheetPresentation: Identifiable, Equatable {
     let id: Int

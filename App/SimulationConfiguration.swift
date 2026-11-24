@@ -66,11 +66,11 @@ enum OutOfReachScenario: String, Equatable {
 
 // One scripted playback event per launch, so a UI test can prove one cause at a time.
 enum ScriptedPlaybackScenario: String, CaseIterable {
-    case routeLoss = "-SAMADHI_ROUTE_LOST"
-    case interruption = "-SAMADHI_INTERRUPTION"
-    case naturalBoundary = "-SAMADHI_NATURAL_BOUNDARY"
-    case externalBoundary = "-SAMADHI_EXTERNAL_BOUNDARY"
-    case sameSongCallback = "-SAMADHI_SAME_SONG_CALLBACK"
+    case routeLoss = "-SLIPSTREAM_ROUTE_LOST"
+    case interruption = "-SLIPSTREAM_INTERRUPTION"
+    case naturalBoundary = "-SLIPSTREAM_NATURAL_BOUNDARY"
+    case externalBoundary = "-SLIPSTREAM_EXTERNAL_BOUNDARY"
+    case sameSongCallback = "-SLIPSTREAM_SAME_SONG_CALLBACK"
 }
 
 struct SimulationConfiguration {
@@ -136,20 +136,20 @@ struct SimulationConfiguration {
         #endif
 
         return SimulationConfiguration(
-            fastMode: arguments.contains("-SAMADHI_FAST_MODE"),
-            permissionDenied: arguments.contains("-SAMADHI_PERMISSION_DENIED"),
+            fastMode: arguments.contains("-SLIPSTREAM_FAST_MODE"),
+            permissionDenied: arguments.contains("-SLIPSTREAM_PERMISSION_DENIED"),
             scriptedPlayback: ScriptedPlaybackScenario.allCases.first {
                 arguments.contains($0.rawValue)
             },
             autoFeedbackScenario: {
-                let prefix = "-SAMADHI_AUTO_FEEDBACK="
+                let prefix = "-SLIPSTREAM_AUTO_FEEDBACK="
                 guard let argument = arguments.first(where: { $0.hasPrefix(prefix) }) else {
                     return nil
                 }
                 return AutoFeedbackScenario(rawValue: String(argument.dropFirst(prefix.count)))
             }(),
             outOfReachScenario: {
-                let prefix = "-SAMADHI_OUT_OF_REACH="
+                let prefix = "-SLIPSTREAM_OUT_OF_REACH="
                 guard let argument = arguments.first(where: { $0.hasPrefix(prefix) }) else {
                     return nil
                 }
@@ -162,13 +162,13 @@ struct SimulationConfiguration {
                     false
                 #endif
             }(),
-            missingArtwork: arguments.contains("-SAMADHI_MISSING_ARTWORK"),
-            extendedAcquisitionWindow: arguments.contains("-SAMADHI_TEST_ACQUISITION_WINDOW"),
+            missingArtwork: arguments.contains("-SLIPSTREAM_MISSING_ARTWORK"),
+            extendedAcquisitionWindow: arguments.contains("-SLIPSTREAM_TEST_ACQUISITION_WINDOW"),
             useAppleMusicCoreLoop: arguments.contains("--apple-music-core-loop"),
             useSimulatorDemoMusic: useSimulatorDemoMusic,
             setupReviewMode: {
                 #if DEBUG && targetEnvironment(simulator)
-                    arguments.contains("-SAMADHI_SETUP_REVIEW_MODE")
+                    arguments.contains("-SLIPSTREAM_SETUP_REVIEW_MODE")
                 #else
                     false
                 #endif
@@ -188,36 +188,36 @@ struct SimulationConfiguration {
                 #endif
             }(),
             musicSelectionFixture: {
-                if arguments.contains("-SAMADHI_MUSIC_NONE") { return .none }
-                if arguments.contains("-SAMADHI_MUSIC_LOADING") { return .loading }
-                if arguments.contains("-SAMADHI_MUSIC_LOADING_SELECTED") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_NONE") { return .none }
+                if arguments.contains("-SLIPSTREAM_MUSIC_LOADING") { return .loading }
+                if arguments.contains("-SLIPSTREAM_MUSIC_LOADING_SELECTED") {
                     return .loadingSelected
                 }
-                if arguments.contains("-SAMADHI_MUSIC_ANALYZING") { return .analyzing }
-                if arguments.contains("-SAMADHI_MUSIC_PARTIAL") { return .partial }
-                if arguments.contains("-SAMADHI_MUSIC_AUTHORIZATION_FAILURE") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_ANALYZING") { return .analyzing }
+                if arguments.contains("-SLIPSTREAM_MUSIC_PARTIAL") { return .partial }
+                if arguments.contains("-SLIPSTREAM_MUSIC_AUTHORIZATION_FAILURE") {
                     return .authorizationFailure
                 }
-                if arguments.contains("-SAMADHI_MUSIC_IMPORT_FAILURE") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_IMPORT_FAILURE") {
                     return .importFailure
                 }
-                if arguments.contains("-SAMADHI_MUSIC_LIBRARY_EMPTY") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_LIBRARY_EMPTY") {
                     return .emptyLibrary
                 }
-                if arguments.contains("-SAMADHI_MUSIC_LIBRARY_TWO") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_LIBRARY_TWO") {
                     return .twoPlaylistLibrary
                 }
-                if arguments.contains("-SAMADHI_MUSIC_LIBRARY_LARGE") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_LIBRARY_LARGE") {
                     return .largeLibrary
                 }
-                if arguments.contains("-SAMADHI_MUSIC_LONG_NAME") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_LONG_NAME") {
                     return .longPlaylistName
                 }
-                if arguments.contains("-SAMADHI_MUSIC_LIBRARY_READING") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_LIBRARY_READING") {
                     return .readingLibrary
                 }
                 // Starts reading by itself, because a test runner's snapshots stall a screen recording.
-                if arguments.contains("-SAMADHI_MUSIC_READING_DEMO") {
+                if arguments.contains("-SLIPSTREAM_MUSIC_READING_DEMO") {
                     return .readingDemo
                 }
                 return .standard

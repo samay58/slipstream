@@ -7,12 +7,12 @@ collect_inputs() {
   for path in \
     App \
     Resources \
-    Packages/SamadhiKit/Sources \
+    Packages/SlipstreamKit/Sources \
     Config \
     project.yml \
-    Samadhi.xcodeproj/project.pbxproj \
-    Packages/SamadhiKit/Package.swift \
-    Packages/SamadhiKit/Package.resolved \
+    Slipstream.xcodeproj/project.pbxproj \
+    Packages/SlipstreamKit/Package.swift \
+    Packages/SlipstreamKit/Package.resolved \
     Scripts/capture-source-fingerprint.sh \
     Scripts/embed-build-identity.sh \
     Scripts/source-fingerprint.sh

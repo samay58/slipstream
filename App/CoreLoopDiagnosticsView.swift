@@ -1,6 +1,6 @@
 #if DEBUG
-    import SamadhiDomain
-    import SamadhiMotion
+    import SlipstreamDomain
+    import SlipstreamMotion
     import SwiftUI
 
     enum TempoDiagnosticStatus: String, Sendable {

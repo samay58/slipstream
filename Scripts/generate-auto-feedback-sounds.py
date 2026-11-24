@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline prototype arrival sounds for Samadhi Auto feedback.
+"""Offline prototype arrival sounds for Slipstream Auto feedback.
 
 Standard library only. No network, no paid service, no third-party audio. Every file is
 synthesized from the parameters in FAMILIES below, so the same script reproduces the same bytes.

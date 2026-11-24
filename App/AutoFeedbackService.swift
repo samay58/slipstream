@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreHaptics
 import Foundation
-import SamadhiDomain
+import SlipstreamDomain
 
 // Working labels for the prototype cue families, chosen for the audition, not for the product.
 enum AutoFeedbackFamily: String, CaseIterable, Sendable {
@@ -327,7 +327,7 @@ final class AutoFeedbackService: AutoFeedbackPlaying {
 }
 
 // Owns the one engine, its registered audio resources, and the preloaded local players.
-// Samadhi never configures AVAudioSession, so no ducking or category option is set anywhere here.
+// Slipstream never configures AVAudioSession, so no ducking or category option is set anywhere here.
 @MainActor
 final class CoreHapticsAutoFeedbackPlayerFactory: AutoFeedbackCuePlayerMaking {
     private let catalog: AutoFeedbackAssetCatalog

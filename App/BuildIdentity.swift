@@ -1,6 +1,6 @@
 import Darwin
 import Foundation
-import SamadhiAudio
+import SlipstreamAudio
 
 struct BuildIdentity: Codable, Equatable, Sendable {
     let gitCommit: String
@@ -16,11 +16,11 @@ struct BuildIdentity: Codable, Equatable, Sendable {
     static var current: BuildIdentity {
         let info = Bundle.main.infoDictionary ?? [:]
         return BuildIdentity(
-            gitCommit: info["SamadhiGitCommit"] as? String ?? "unknown",
-            gitBranch: info["SamadhiGitBranch"] as? String ?? "unknown",
-            trackedFilesDirty: info["SamadhiTrackedFilesDirty"] as? Bool ?? false,
-            buildDate: info["SamadhiBuildDate"] as? String ?? "unknown",
-            sourceFingerprint: info["SamadhiSourceFingerprint"] as? String ?? "unknown",
+            gitCommit: info["SlipstreamGitCommit"] as? String ?? "unknown",
+            gitBranch: info["SlipstreamGitBranch"] as? String ?? "unknown",
+            trackedFilesDirty: info["SlipstreamTrackedFilesDirty"] as? Bool ?? false,
+            buildDate: info["SlipstreamBuildDate"] as? String ?? "unknown",
+            sourceFingerprint: info["SlipstreamSourceFingerprint"] as? String ?? "unknown",
             appVersion: info["CFBundleShortVersionString"] as? String ?? "unknown",
             buildNumber: info["CFBundleVersion"] as? String ?? "unknown",
             tempoAnalyzerVersion: LocalTempoAnalyzer.analysisVersion,

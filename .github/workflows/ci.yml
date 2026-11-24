@@ -23,11 +23,11 @@ jobs:
       - name: Lint
         run: |
           if ! output=$(xcrun swift-format lint --configuration .swift-format --recursive \
-            App Packages/SamadhiKit/Sources Packages/SamadhiKit/Tests Tests 2>&1) || [ -n "$output" ]; then
+            App Packages/SlipstreamKit/Sources Packages/SlipstreamKit/Tests Tests 2>&1) || [ -n "$output" ]; then
             echo "$output"
             exit 1
           fi
       - name: Source fingerprint tests
         run: ./Scripts/test-source-fingerprint.sh
       - name: Package tests
-        run: swift test --package-path Packages/SamadhiKit
+        run: swift test --package-path Packages/SlipstreamKit

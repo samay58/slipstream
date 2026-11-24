@@ -15,15 +15,15 @@ Usage: ./Scripts/sim.sh <command>
   flags                    List the launch arguments the Debug app understands
 
 Examples:
-  ./Scripts/sim.sh run -SAMADHI_FAST_MODE -SAMADHI_MUSIC_PARTIAL
-  ./Scripts/sim.sh matrix setup-partial -SAMADHI_FAST_MODE -SAMADHI_MUSIC_PARTIAL
+  ./Scripts/sim.sh run -SLIPSTREAM_FAST_MODE -SLIPSTREAM_MUSIC_PARTIAL
+  ./Scripts/sim.sh matrix setup-partial -SLIPSTREAM_FAST_MODE -SLIPSTREAM_MUSIC_PARTIAL
   ./Scripts/sim.sh frames testTransportAndFinishAfterStateEvidence
 TEXT
   exit 2
 }
 
 bundle_id=com.samaydhawan.Samadhi
-app_path="$derived_data/Build/Products/Debug-iphonesimulator/Samadhi.app"
+app_path="$derived_data/Build/Products/Debug-iphonesimulator/Slipstream.app"
 output_dir="$scratch/sim"
 
 boot() {
@@ -33,7 +33,7 @@ boot() {
 
 build_and_install() {
   boot
-  xcodebuild_serial build -scheme Samadhi -destination "$simulator_destination" -quiet
+  xcodebuild_serial build -scheme Slipstream -destination "$simulator_destination" -quiet
   xcrun simctl install "$simulator_name" "$app_path"
 }
 
@@ -89,7 +89,7 @@ case "$command" in
       fi
       # shellcheck disable=SC2086
       launch "$@" $arguments
-      sleep "${SAMADHI_SETTLE_SECONDS:-3}"
+      sleep "${SLIPSTREAM_SETTLE_SECONDS:-3}"
       xcrun simctl io "$simulator_name" screenshot --type=png \
         "$output_dir/$name/$environment.png" >/dev/null 2>&1
     done <<'MATRIX'
@@ -116,15 +116,15 @@ MATRIX
       */*) target=$1 ;;
       *)
         class=$(awk -v name="$1" '/^final class /{c=$3; sub(":", "", c)} index($0, "func " name "(") {print c}' \
-          Tests/SamadhiUITests/SamadhiUITests.swift)
-        target="SamadhiUITests/$class/$1"
+          Tests/SlipstreamUITests/SlipstreamUITests.swift)
+        target="SlipstreamUITests/$class/$1"
         ;;
     esac
     result_bundle="$output_dir/$(echo "$1" | tr '/()' '---').xcresult"
     mkdir -p "$output_dir"
     frames_dir="$output_dir/$(echo "$1" | tr '/()' '---')"
     rm -rf "$result_bundle" "$frames_dir"
-    xcodebuild_serial test -scheme Samadhi -destination "$simulator_destination" \
+    xcodebuild_serial test -scheme Slipstream -destination "$simulator_destination" \
       -only-testing:"$target" \
       -resultBundlePath "$result_bundle" -quiet
     xcrun xcresulttool export attachments --path "$result_bundle" --output-path "$frames_dir"

@@ -1,4 +1,4 @@
-import SamadhiDomain
+import SlipstreamDomain
 
 // The reducer decides when a directional Auto cue is valid. The shell only plays what it is told
 // and must never replay a cue on recovery, engine reset, or redraw.

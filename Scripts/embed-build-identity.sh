@@ -17,7 +17,7 @@ else
 fi
 
 build_date="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-fingerprint_file="${DERIVED_FILE_DIR:?}/SamadhiSourceFingerprint.txt"
+fingerprint_file="${DERIVED_FILE_DIR:?}/SlipstreamSourceFingerprint.txt"
 if [ ! -s "$fingerprint_file" ]; then
   printf 'Missing source fingerprint captured before compilation: %s\n' "$fingerprint_file" >&2
   exit 1
@@ -39,8 +39,8 @@ set_bool() {
   "$plist_buddy" -c "Add :$key bool $value" "$built_plist"
 }
 
-set_string SamadhiGitCommit "$git_commit"
-set_string SamadhiGitBranch "$git_branch"
-set_bool SamadhiTrackedFilesDirty "$tracked_files_dirty"
-set_string SamadhiBuildDate "$build_date"
-set_string SamadhiSourceFingerprint "$source_fingerprint"
+set_string SlipstreamGitCommit "$git_commit"
+set_string SlipstreamGitBranch "$git_branch"
+set_bool SlipstreamTrackedFilesDirty "$tracked_files_dirty"
+set_string SlipstreamBuildDate "$build_date"
+set_string SlipstreamSourceFingerprint "$source_fingerprint"

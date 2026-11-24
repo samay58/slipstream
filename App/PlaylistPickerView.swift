@@ -1,4 +1,4 @@
-import SamadhiDesign
+import SlipstreamDesign
 import SwiftUI
 
 struct PlaylistPickerView: View {
@@ -18,7 +18,7 @@ struct PlaylistPickerView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Choose music")
                         .font(.system(.largeTitle, design: .serif).weight(.medium))
-                        .foregroundStyle(SamadhiColor.ink)
+                        .foregroundStyle(SlipstreamColor.ink)
                         .padding(.horizontal, Space.x6)
                         .padding(.bottom, Space.x3)
 
@@ -65,11 +65,11 @@ struct PlaylistPickerView: View {
                         .font(.title3.weight(.semibold))
                     Text("Create one in Apple Music, then try again.")
                         .font(.body)
-                        .foregroundStyle(SamadhiColor.ink.opacity(0.72))
+                        .foregroundStyle(SlipstreamColor.ink.opacity(0.72))
 
                     Button("Try again", action: retryPlaylistLibrary)
                         .font(.body.weight(.semibold))
-                        .foregroundStyle(SamadhiColor.ink.opacity(0.82))
+                        .foregroundStyle(SlipstreamColor.ink.opacity(0.82))
                         .frame(minHeight: 44)
                         .accessibilityIdentifier("reload-playlist-library")
                 }
@@ -89,14 +89,14 @@ struct PlaylistPickerView: View {
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: Space.x3) {
                 Circle()
-                    .fill(SamadhiColor.line)
+                    .fill(SlipstreamColor.line)
                     .frame(width: 6, height: 6)
                     .opacity(isSelected ? 1 : 0)
                     .accessibilityHidden(true)
 
                 Text(playlist.name)
                     .font(.system(.title3, design: .serif).weight(isSelected ? .semibold : .regular))
-                    .foregroundStyle(SamadhiColor.ink)
+                    .foregroundStyle(SlipstreamColor.ink)
                     .multilineTextAlignment(.leading)
 
                 Spacer(minLength: Space.x3)
@@ -104,7 +104,7 @@ struct PlaylistPickerView: View {
                 if isSelected {
                     Text("Current")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(SamadhiColor.ink.opacity(0.72))
+                        .foregroundStyle(SlipstreamColor.ink.opacity(0.72))
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 58, alignment: .leading)
@@ -119,8 +119,8 @@ struct PlaylistPickerView: View {
                 trailing: Space.x6
             )
         )
-        .listRowBackground(isSelected ? SamadhiColor.line.opacity(0.12) : Color.clear)
-        .listRowSeparatorTint(SamadhiColor.ink.opacity(0.14))
+        .listRowBackground(isSelected ? SlipstreamColor.line.opacity(0.12) : Color.clear)
+        .listRowSeparatorTint(SlipstreamColor.ink.opacity(0.14))
         .accessibilityLabel(
             isSelected ? "\(playlist.name), Current playlist" : playlist.name
         )

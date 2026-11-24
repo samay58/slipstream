@@ -1,16 +1,16 @@
-# Samadhi repository instructions
+# Slipstream repository instructions
 
-Start with Docs/STATUS.md and Docs/PLAN.md. Docs/DEVELOPMENT.md explains the development loop and its commands. Docs/Archive/ is history, not instruction.
+Start with Docs/STATUS.md and Docs/PLAN.md. Docs/DEVELOPMENT.md explains the development loop and its commands, and Docs/PHONE.md covers the phone. Docs/Archive/ is history, not instruction.
 
 ## Product
-- The product is Slipstream. Samadhi remains the repository, module, and bundle name, and the phone's data folder. Never rename the bundle identifier or that folder, because the phone holds the only copy of its playlist and analysis.
+- The product and the code are Slipstream. Three things keep the first name, Samadhi, on purpose: the bundle identifier `com.samaydhawan.Samadhi`, the phone's data folder (`App/PhoneDataFolder.swift`), and the signing profile. Never rename them, because the phone holds the only copy of its playlist and analysis.
 - This is a minimal body-aware music player, not a fitness platform.
 - Do not add features not present in Docs/PRODUCT.md and Docs/PLAN.md.
 - The shipped app contains no AI or network dependency beyond Apple Music.
 - Interaction quality and reliable audio behavior outrank feature breadth.
 
 ## Architecture
-- Keep SamadhiDomain free of UI and Apple media frameworks.
+- Keep SlipstreamDomain free of UI and Apple media frameworks.
 - Use the functional-core, main-actor-shell architecture in Docs/ARCHITECTURE.md.
 - Do not introduce a production dependency without documenting why.
 - Do not call audio or motion services directly from SwiftUI views.
@@ -27,7 +27,7 @@ Start with Docs/STATUS.md and Docs/PLAN.md. Docs/DEVELOPMENT.md explains the dev
 ## Validation
 - Run `./Scripts/check.sh` while working. It runs only the tests your changes can affect.
 - Run `./Scripts/gate.sh` before a phone install or a push to main. It skips itself when nothing that affects it changed.
-- Put new interface checks in `Tests/SamadhiTests/ScreenRenderingTests.swift` unless they need real touch or the whole app.
+- Put new interface checks in `Tests/SlipstreamTests/ScreenRenderingTests.swift` unless they need real touch or the whole app.
 - Run relevant unit tests after domain changes. Write the failing test first when fixing a bug.
 - Verify every visual milestone in a real Simulator frame, and open the frame before claiming a result.
 - Do not claim cadence quality without physical-device evidence.
