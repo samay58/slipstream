@@ -1,6 +1,6 @@
 # Felt synchronization playbook
 
-Samadhi succeeds only when a runner can feel music and stride become one system. A changing BPM label or a correct playback-rate write is not enough. The product must create an audible change, a bodily lock, and evidence that those two experiences agree.
+Slipstream succeeds only when a runner can feel music and stride become one system. A changing BPM label or a correct playback-rate write is not enough. The product must create an audible change, a bodily lock, and evidence that those two experiences agree.
 
 ## Product position
 
@@ -46,7 +46,7 @@ Cadence is individual. Published running work places recreational running cadenc
 
 Cadence-retraining studies commonly test changes of 5 to 10 percent from the runner's own preferred cadence. That evidence does not justify prescribing one universal target. Source: [randomized cadence-retraining trial](https://pubmed.ncbi.nlm.nih.gov/31264286/).
 
-Samadhi therefore separates availability from prescription:
+Slipstream therefore separates availability from prescription:
 
 - Auto defaults to zero correction and follows the runner's measured cadence.
 - Auto follows steady movement from 90 through 210 SPM. Walking needs five seconds of steady evidence. Running can settle after the sensor filter locks. The app reports honestly when the current song reaches its boundary.
@@ -59,16 +59,16 @@ The playlist may cover a wider range than the current wheel. Explicit Skip and n
 
 Apple recommends selection haptics while a control's value changes and warns against feedback that lacks a direct causal relationship or becomes tiring through repetition. Low-sharpness Core Haptics events feel round and organic, while high-sharpness events feel crisp. Sources: [Apple haptics guidance](https://developer.apple.com/design/human-interface-guidelines/playing-haptics), [Core Haptics sharpness](https://developer.apple.com/documentation/corehaptics/chhapticevent/parameterid/hapticsharpness).
 
-Samadhi uses one low-sharpness transient per BPM, a slightly fuller low-sharpness notch every five BPM, one terminal haptic at a song boundary, and a soft landing when Auto returns to neutral. One revolution maps to 30 BPM, with reverse hysteresis around each detent so finger tremor does not chatter. At a boundary, the marker and detents stop with the number and repeated outward motion stays silent. The engine starts only when the control opens, queues rapid detents 28 milliseconds apart so crossed values do not collapse into one buzz, and falls back to the system selection haptic when custom haptics are unavailable. Deterministic tests prove event order and geometry. Only a physical iPhone can judge warmth, fatigue, and grip.
+Slipstream uses one low-sharpness transient per BPM, a slightly fuller low-sharpness notch every five BPM, one terminal haptic at a song boundary, and a soft landing when Auto returns to neutral. One revolution maps to 30 BPM, with reverse hysteresis around each detent so finger tremor does not chatter. At a boundary, the marker and detents stop with the number and repeated outward motion stays silent. The engine starts only when the control opens, queues rapid detents 28 milliseconds apart so crossed values do not collapse into one buzz, and falls back to the system selection haptic when custom haptics are unavailable. Deterministic tests prove event order and geometry. Only a physical iPhone can judge warmth, fatigue, and grip.
 
 ## djay Pro as the manipulation benchmark
 
 djay demonstrates what polished control looks like, but it does not prove that an ordinary MusicKit app receives the same audio access.
 
 - djay exposes key lock so tempo can move without pitch following it, and offers configurable tempo ranges from conservative settings to ±75 percent. Sources: [djay key lock](https://help.algoriddim.com/user-manual/djay-ios/dj-tools/key-lock), [djay tempo settings](https://help.algoriddim.com/user-manual/djay-ios/settings/general).
-- Neural Mix Pro advertises pitch-stable time stretching up to ±75 percent for app-owned or locally processed material. That is a specialized engine and should be treated as a quality benchmark, not a safe Samadhi production range. Source: [Neural Mix Pro](https://www.algoriddim.com/news/364-algoriddim-introduces-ai-music-player-editor-on-neural-mix-pro).
+- Neural Mix Pro advertises pitch-stable time stretching up to ±75 percent for app-owned or locally processed material. That is a specialized engine and should be treated as a quality benchmark, not a safe Slipstream production range. Source: [Neural Mix Pro](https://www.algoriddim.com/news/364-algoriddim-introduces-ai-music-player-editor-on-neural-mix-pro).
 - djay treats BPM as editable analysis, with half/double correction, tap tempo, exact entry, straight beat grids, dynamic beat grids, and downbeat anchors. A scalar BPM is not a complete synchronization model. Sources: [djay BPM editing](https://help.algoriddim.com/user-manual/djay-pro-windows/dj-tools/beatgrids-bpm-sync/adjusting-bpm), [djay beat grids](https://help.algoriddim.com/user-manual/djay-pro-windows/dj-tools/beatgrids-bpm-sync/beatgrids).
-- djay's soft-takeover pattern transfers control without an abrupt jump. Samadhi should seed Manual from the currently applied musical target and let the user take ownership continuously. Source: [djay sync controls](https://help.algoriddim.com/user-manual/djay-ios/dj-tools/beatgrids-bpm-sync/sync).
+- djay's soft-takeover pattern transfers control without an abrupt jump. Slipstream should seed Manual from the currently applied musical target and let the user take ownership continuously. Source: [djay sync controls](https://help.algoriddim.com/user-manual/djay-ios/dj-tools/beatgrids-bpm-sync/sync).
 - Automix selects compatible songs, aligns an incoming track, and blends tempo at a transition instead of forcing every song continuously. Source: [djay Automix](https://help.algoriddim.com/user-manual/djay-pro-mac/mixing-basics/using-automix).
 - djay's Apple Music integration still disables Neural Mix and mix recording for streamed Apple Music tracks. Even a partner DJ product operates under material streaming restrictions. Source: [djay streaming services](https://help.algoriddim.com/user-manual/djay-ios/music-library/streaming-services).
 
@@ -76,16 +76,16 @@ The relevant lesson is not to copy a DJ interface. Build a restrained consumer i
 
 ## Public MusicKit boundary
 
-Public MusicKit gives Samadhi a useful but narrow control surface.
+Public MusicKit gives Slipstream a useful but narrow control surface.
 
 - `ApplicationMusicPlayer` exposes queue, playback time, transitions, state, and writable playback rate. Apple does not publish a supported rate range, pitch-quality guarantee, beat grid, phase-control primitive, DSP graph, or PCM callback on this surface. Sources: [ApplicationMusicPlayer](https://developer.apple.com/documentation/musickit/applicationmusicplayer), [playbackRate](https://developer.apple.com/documentation/musickit/musicplayer/state-swift.class/playbackrate).
-- Apple Music metadata does not document BPM, downbeat, beat grid, or phase offset. Samadhi must continue local analysis and cannot assume that a preview's phase maps to the full streamed song. Sources: [Apple Music song attributes](https://developer.apple.com/documentation/applemusicapi/songs/attributes-data.dictionary), [PreviewAsset](https://developer.apple.com/documentation/musickit/previewasset).
-- Public `Song` and `PreviewAsset` surfaces expose streamed playback identity and preview assets, but no full-track file URL or PCM callback. Samadhi therefore cannot route subscription playback through `AVAudioEngine` or a chosen time-pitch algorithm using these public surfaces. This is an inference from the documented API boundary. Sources: [MusicKit Song](https://developer.apple.com/documentation/musickit/song), [PreviewAsset](https://developer.apple.com/documentation/musickit/previewasset).
+- Apple Music metadata does not document BPM, downbeat, beat grid, or phase offset. Slipstream must continue local analysis and cannot assume that a preview's phase maps to the full streamed song. Sources: [Apple Music song attributes](https://developer.apple.com/documentation/applemusicapi/songs/attributes-data.dictionary), [PreviewAsset](https://developer.apple.com/documentation/musickit/previewasset).
+- Public `Song` and `PreviewAsset` surfaces expose streamed playback identity and preview assets, but no full-track file URL or PCM callback. Slipstream therefore cannot route subscription playback through `AVAudioEngine` or a chosen time-pitch algorithm using these public surfaces. This is an inference from the documented API boundary. Sources: [MusicKit Song](https://developer.apple.com/documentation/musickit/song), [PreviewAsset](https://developer.apple.com/documentation/musickit/previewasset).
 - Apple's own AutoMix performs beat matching and time stretching internally, but that first-party feature does not expose those controls through public MusicKit. Source: [Apple services announcement](https://www.apple.com/newsroom/2025/06/apple-services-deliver-powerful-features-and-intelligent-updates-to-users-this-fall/).
 
 Any wider MusicKit rate remains an empirical device capability. Test it. Do not infer quality or stability from a successful property write.
 
-## Current Samadhi gap
+## Current Slipstream gap
 
 The source-neutral planner preserves the first ready track at run start and prepares a better fit after five seconds of stable incompatibility. Tempo estimator version 4 keeps measured musical pulse separate from an explicit one-step-per-beat or supported two-steps-per-beat cadence projection. The planner and summary use the cadence projection; visible Music BPM uses the musical pulse. The wheel commits one absolute target at finger-up. The current software candidate spans 0.85 through 1.15. Only the inner 0.90 through 1.10 pair has been heard physically.
 
@@ -93,7 +93,7 @@ The current private compatibility matrix is sobering. Across 14 ready tracks at 
 
 - One imported run must cross a natural prepared transition without a gap, stale feedback, or a false summary.
 - The bounded dial must stop cleanly at both current-song limits and agree with the requested BPM, selected pulse, MusicKit rate read-back, and audible result on the physical phone.
-- The current metric compares effective tempo with cadence. It does not observe footfall phase. Source: [AdaptationPolicy.swift](../Packages/SamadhiKit/Sources/SamadhiDomain/AdaptationPolicy.swift).
+- The current metric compares effective tempo with cadence. It does not observe footfall phase. Source: [AdaptationPolicy.swift](../../Packages/SlipstreamKit/Sources/SlipstreamDomain/AdaptationPolicy.swift).
 
 Do not mistake the completed control surface for a completed body-to-music loop.
 
@@ -101,7 +101,7 @@ Do not mistake the completed control surface for a completed body-to-music loop.
 
 Use a two-layer match:
 
-1. **Preserve the current song.** Start with the first ready song in source order. While it plays, evaluate explicit cadence relationships and hold the nearest truthful boundary when needed. A compatibility improvement may reorder only the next entry. D-Jogger used the broad pattern of bounded stretching plus closer-tempo selection, but Samadhi does not use cadence as hidden transport authority. Source: [D-Jogger implementation](https://backoffice.biblio.ugent.be/download/8551818/8551819).
+1. **Preserve the current song.** Start with the first ready song in source order. While it plays, evaluate explicit cadence relationships and hold the nearest truthful boundary when needed. A compatibility improvement may reorder only the next entry. D-Jogger used the broad pattern of bounded stretching plus closer-tempo selection, but Slipstream does not use cadence as hidden transport authority. Source: [D-Jogger implementation](https://backoffice.biblio.ugent.be/download/8551818/8551819).
 2. **Fine match by rate.** The current candidate applies playback rate from 0.85 through 1.15. The 0.90 and 1.10 pair was clearly distinguishable in the physical Bluetooth check. The new endpoints need their own Apple Music read-back and full-song listening result. D-Jogger found roughly ±10 percent acceptable for its own phase-vocoder implementation, which does not prove MusicKit quality at ±15 percent. Source: [D-Jogger implementation](https://backoffice.biblio.ugent.be/download/8551818/8551819).
 3. **Transition musically.** Reorder or select the next compatible song at a natural boundary. Do not jump tracks for every cadence fluctuation. djay applies tempo alignment around selected transition regions and holds a common BPM when songs are already close. Source: [djay Automix](https://help.algoriddim.com/user-manual/djay-pro-mac/mixing-basics/using-automix).
 4. **Preserve truthful control.** Manual stops at the current song's reachable boundary. Auto may keep an outside cadence visible while holding the nearest proven rate and preparing one latest compatible candidate. Preparation is not transport permission. Only Skip or a player-confirmed natural boundary changes the song.
@@ -136,7 +136,7 @@ The 5 to 8 percent comparison is grounded in published tempo-discrimination rang
 ### Felt-lock proof
 
 - Compare no instruction with one calm cue: “Let your steps settle onto the beat.” Explicit instruction materially increased entrainment in published running research. Source: [instruction and running entrainment study](https://pmc.ncbi.nlm.nih.gov/articles/PMC8048782/).
-- Measure step-to-beat phase before making a beat-lock claim. End-to-end latency includes sensing, filtering, control, player response, audio buffering, Bluetooth, and perception. D-Jogger calibrated roughly 100 ms in its hardware path and reported approximately 13 ms mean placement after compensation; Samadhi needs its own measurement. Source: [D-Jogger implementation](https://backoffice.biblio.ugent.be/download/8551818/8551819).
+- Measure step-to-beat phase before making a beat-lock claim. End-to-end latency includes sensing, filtering, control, player response, audio buffering, Bluetooth, and perception. D-Jogger calibrated roughly 100 ms in its hardware path and reported approximately 13 ms mean placement after compensation; Slipstream needs its own measurement. Source: [D-Jogger implementation](https://backoffice.biblio.ugent.be/download/8551818/8551819).
 - If public MusicKit cannot supply a trustworthy beat grid and phase-control path, retain “Tempo matched” as honest language and treat true felt lock as a source-level blocker.
 
 ## Pivot path if MusicKit fails
@@ -153,7 +153,7 @@ The pivot order is:
 1. Public MusicKit with compatible-track selection and a physically proven wider correction envelope.
 2. App-owned DRM-free files with Apple spectral processing and phase-aware scheduling.
 3. A small commissioned or licensed adaptive catalog if Weav-scale range remains the product requirement.
-4. An Apple DJ partnership only if Apple documents a path available to Samadhi. djay's public Apple Music integration does not establish such a path for ordinary MusicKit apps. Sources: [djay Apple Music announcement](https://www.algoriddim.com/news/449-apple-music-integration-is-here-), [djay streaming restrictions](https://help.algoriddim.com/user-manual/djay-ios/music-library/streaming-services).
+4. An Apple DJ partnership only if Apple documents a path available to Slipstream. djay's public Apple Music integration does not establish such a path for ordinary MusicKit apps. Sources: [djay Apple Music announcement](https://www.algoriddim.com/news/449-apple-music-integration-is-here-), [djay streaming restrictions](https://help.algoriddim.com/user-manual/djay-ios/music-library/streaming-services).
 
 ## Stop rule
 

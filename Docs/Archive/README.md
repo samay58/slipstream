@@ -1,6 +1,6 @@
 # Archive
 
-These documents are finished. They stay because the reasoning is still useful, and they are not current instructions. Current truth lives in [STATUS.md](../STATUS.md) and [PLAN.md](../PLAN.md). Their words are unchanged apart from repaired links, so a statement like "current" means current at the time.
+These documents are finished. They stay because the reasoning is still useful, and they are not current instructions. Current truth lives in [STATUS.md](../STATUS.md) and [PLAN.md](../PLAN.md). Their words are unchanged apart from repaired links, so a statement like "current" means current at the time. They predate the Slipstream rename and use the old names and paths, such as `Packages/SamadhiKit`.
 
 | Document | What it records |
 | --- | --- |

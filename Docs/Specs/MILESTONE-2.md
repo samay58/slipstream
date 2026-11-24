@@ -2,13 +2,13 @@
 
 ## Adaptive audio and playlist import
 
-Status: Built in software. Its finish line, one real outdoor run, is still open in [PLAN.md](PLAN.md).
+Status: Built in software. Its finish line, one real outdoor run, is still open in [PLAN.md](../PLAN.md).
 
 This document defines the active milestone. It replaced the proposed Milestone 2 boundary in `PLAN.md`.
 
 ## Problem Statement
 
-Samadhi currently proves that the interaction can feel calm, legible, and coherent. It does not yet do the job the product exists to do. Cadence is simulated, music is silent demo data, and the displayed lock and summary do not come from a physical run or real audio.
+Slipstream currently proves that the interaction can feel calm, legible, and coherent. It does not yet do the job the product exists to do. Cadence is simulated, music is silent demo data, and the displayed lock and summary do not come from a physical run or real audio.
 
 A useful version needs both halves of the loop:
 
@@ -17,13 +17,13 @@ A useful version needs both halves of the loop:
 
 Building playlist browsing without adaptive playback would create a conventional music player. Building adaptive playback around one bundled test file would prove engineering but still leave the product awkward to use. This milestone must connect an imported collection to real cadence and real playback.
 
-Apple Music is the selected production player. Its song metadata does not include tempo, so Samadhi resolves preview audio, analyzes it locally, and applies the result to Apple Music playback. A narrow 12-preview reference corpus now passes. The verified fixture, Core Motion, bounded adaptation, and applied-rate feedback pass in a focused device configuration. Broad music accuracy, imported multi-track playback, and long-form reliability remain open product risks.
+Apple Music is the selected production player. Its song metadata does not include tempo, so Slipstream resolves preview audio, analyzes it locally, and applies the result to Apple Music playback. A narrow 12-preview reference corpus now passes. The verified fixture, Core Motion, bounded adaptation, and applied-rate feedback pass in a focused device configuration. Broad music accuracy, imported multi-track playback, and long-form reliability remain open product risks.
 
 Tempo matching is also narrower than beat-perfect synchronization. Live pedometer cadence provides steps per minute, not a reliable timestamp for every foot strike. Milestone 2 matches the music's tempo to stable cadence. It does not claim that each footfall lands on a specific beat.
 
 ## Solution
 
-The runner chooses one existing collection, presses Start, and begins moving. Samadhi plays real music, acquires real cadence, selects the musically equivalent beat rate for the current track, and gently adjusts playback speed within a conservative range. Once the rate settles, the interface confirms that the tempo is matched and withdraws.
+The runner chooses one existing collection, presses Start, and begins moving. Slipstream plays real music, acquires real cadence, selects the musically equivalent beat rate for the current track, and gently adjusts playback speed within a conservative range. Once the rate settles, the interface confirms that the tempo is matched and withdraws.
 
 Playlist import comes before playlist generation. Apple Music was selected after the device feasibility work resolved token, tempo-source, playback, Bluetooth routing, and live-rate risk:
 
@@ -37,26 +37,26 @@ Milestone 2 is complete only when one imported collection with at least three pl
 
 ## User Stories
 
-1. As a runner opening Samadhi for the first time, I want one clear way to choose music, so that I can make the app useful before starting a run.
-2. As an Apple Music user, I want Samadhi to request music access only after I choose Apple Music, so that permission appears in context.
+1. As a runner opening Slipstream for the first time, I want one clear way to choose music, so that I can make the app useful before starting a run.
+2. As an Apple Music user, I want Slipstream to request music access only after I choose Apple Music, so that permission appears in context.
 3. As an Apple Music user, I want to see my library playlists, so that I can choose music I already know.
 4. As a runner, I want to select one playlist rather than build a new queue, so that setup stays brief.
-5. As a runner, I want Samadhi to preserve playlist order, so that the collection behaves predictably.
+5. As a runner, I want Slipstream to preserve playlist order, so that the collection behaves predictably.
 6. As a runner, I want the chosen collection to remain selected after relaunch, so that returning runs still begin with one action.
 7. As a runner, I want replacing the selected collection to be explicit, so that setup never changes by surprise.
-8. As a runner, I want Samadhi to analyze imported tracks before a run, so that playback does not pause for heavy work while I am moving.
+8. As a runner, I want Slipstream to analyze imported tracks before a run, so that playback does not pause for heavy work while I am moving.
 9. As a runner, I want to see simple analysis progress, so that I know whether the collection is ready.
-10. As a runner, I want unsupported or uncertain tracks identified plainly, so that Samadhi never silently pretends they are adaptive.
+10. As a runner, I want unsupported or uncertain tracks identified plainly, so that Slipstream never silently pretends they are adaptive.
 11. As a runner, I want at least one ready track before Start becomes available, so that a run cannot enter a dead playback state.
 12. As a runner, I want to change my selected collection from Ready, so that music selection does not require settings or a tab bar.
 13. As a runner, I want real music to begin after one Start action, so that the interaction remains immediate.
-14. As a runner, I want Samadhi to detect cadence from the iPhone I already carry, so that I do not need another account or sensor.
+14. As a runner, I want Slipstream to detect cadence from the iPhone I already carry, so that I do not need another account or sensor.
 15. As a runner, I want the app to wait for stable cadence before claiming a match, so that the interface earns my trust.
 16. As a runner, I want tempo changes to arrive gradually, so that I feel the music settle rather than hear the software working.
 17. As a listener, I want vocals and instruments to retain their pitch, so that adaptive playback still sounds like the original recording.
 18. As a runner, I want small gait noise ignored, so that the music does not hunt around my stride.
-19. As a runner, I want Samadhi to hold a stable rate when cadence briefly becomes uncertain, so that a few bad samples do not disturb the song.
-20. As a runner, I want Samadhi to ease back to normal speed when cadence stays unavailable, so that failure remains calm and honest.
+19. As a runner, I want Slipstream to hold a stable rate when cadence briefly becomes uncertain, so that a few bad samples do not disturb the song.
+20. As a runner, I want Slipstream to ease back to normal speed when cadence stays unavailable, so that failure remains calm and honest.
 21. As a runner, I want incompatible tracks handled without unsafe stretching, so that audio quality outranks forcing every song into range.
 22. As a runner, I want Skip to choose the next usable track in collection order, so that controls remain predictable.
 23. As a runner, I want pause to stop cadence work and freeze the current song position, so that the session does not advance while I am stopped.
@@ -65,11 +65,11 @@ Milestone 2 is complete only when one imported collection with at least three pl
 26. As a runner, I want an explicit Resume after route recovery, so that I remain in control of sound in public.
 27. As a runner, I want music and cadence adaptation to continue when the screen locks, so that the phone can stay in my pocket.
 28. As a runner, I want the song-progress ring to reflect the actual playing track, so that the visual has a truthful purpose.
-29. As a runner, I want the lock confirmation to say that tempo is matched, so that Samadhi does not imply beat-perfect footfall alignment.
+29. As a runner, I want the lock confirmation to say that tempo is matched, so that Slipstream does not imply beat-perfect footfall alignment.
 30. As a runner, I want the summary to use measured active time, cadence, songs, and tempo-matched time, so that the result describes the run that occurred.
 31. As a runner using fixed rhythm after denied motion access, I want the summary to say tempo matching was not measured, so that zero is not confused with failure.
 32. As a runner using VoiceOver, Dynamic Type, Reduce Motion, or increased contrast, I want setup and running controls to remain complete, so that production capability does not regress accessibility.
-33. As a privacy-conscious runner, I want imported audio, analysis results, and run evidence to remain on device, so that Samadhi does not need its own backend.
+33. As a privacy-conscious runner, I want imported audio, analysis results, and run evidence to remain on device, so that Slipstream does not need its own backend.
 34. As a returning runner, I want unchanged tracks to reuse cached analysis, so that relaunch and setup stay fast.
 35. As a developer, I want simulation to remain available behind the same interfaces, so that automated tests do not depend on Apple Music, physical motion, or headphones.
 36. As a developer, I want stale cadence, analysis, and playback callbacks rejected by identity, so that cancelled work cannot mutate a newer run.
@@ -126,7 +126,7 @@ Exactly one collection is selected at a time. Replacing it is explicit. Imported
 
 ### Tempo analysis
 
-Samadhi needs base tempo before it can adapt a track. Apple Music song metadata includes duration, identifiers, artwork, and playback parameters, but no BPM. The same local tempo-analysis interface should accept either a MusicKit preview asset or a local audio file.
+Slipstream needs base tempo before it can adapt a track. Apple Music song metadata includes duration, identifiers, artwork, and playback parameters, but no BPM. The same local tempo-analysis interface should accept either a MusicKit preview asset or a local audio file.
 
 Use Apple frameworks only for the first implementation. Decode a mono analysis window, build an onset-strength signal, and estimate tempo with Accelerate-based spectral flux and autocorrelation. The exact signal-processing internals may change without changing the interface.
 
@@ -185,7 +185,7 @@ At run start, choose the ready track whose explicit running pulse needs the leas
 
 Skip chooses the latest prepared compatible track when one exists, otherwise the next adaptive-ready track in original collection order. If no compatible track exists, the requested BPM remains visible and playback holds the nearest proven boundary without claiming that the request was reached.
 
-Before broad reliability work, pass the perceptibility gate in [ADAPTIVE-AUDIO-PLAYBOOK.md](ADAPTIVE-AUDIO-PLAYBOOK.md). A successful property write or tempo-matched percentage does not prove that the runner can feel the mechanic. Beat lock remains a separate claim requiring measured step-to-beat phase and route latency.
+Before broad reliability work, pass the perceptibility gate in [ADAPTIVE-AUDIO.md](../Research/ADAPTIVE-AUDIO.md). A successful property write or tempo-matched percentage does not prove that the runner can feel the mechanic. Beat lock remains a separate claim requiring measured step-to-beat phase and route latency.
 
 ### Honest measurement
 
@@ -211,13 +211,13 @@ The app must continue playback and cadence work with the screen locked. Lock Scr
 
 Keep the existing functional-core, main-actor-shell shape.
 
-`SamadhiDomain` gains source-neutral music collection and track models, tempo analysis results, cadence observations, adaptation decisions, real progress, and new run events and effects. The reducer remains the sole owner of run phase changes.
+`SlipstreamDomain` gains source-neutral music collection and track models, tempo analysis results, cadence observations, adaptation decisions, real progress, and new run events and effects. The reducer remains the sole owner of run phase changes.
 
-`SamadhiMotion` gains a cadence-provider protocol, a Core Motion implementation, filtering input types, and deterministic fixtures. Core Motion callbacks produce observations only.
+`SlipstreamMotion` gains a cadence-provider protocol, a Core Motion implementation, filtering input types, and deterministic fixtures. Core Motion callbacks produce observations only.
 
-`SamadhiAudio` gains the tempo analyzer, the selected production player boundary and implementation, audio events, progress, and deterministic fakes. The app target depends on `SamadhiAudio` directly.
+`SlipstreamAudio` gains the tempo analyzer, the selected production player boundary and implementation, audio events, progress, and deterministic fakes. The app target depends on `SlipstreamAudio` directly.
 
-`SamadhiDesign` receives source-neutral collection and track presentation data. Demo track metadata leaves the design module once real import is connected.
+`SlipstreamDesign` receives source-neutral collection and track presentation data. Demo track metadata leaves the design module once real import is connected.
 
 The app target owns dependency composition, authorization requests, the selected collection store, task lifetime, audio-session observation, and translation between service events and reducer events.
 
@@ -239,7 +239,7 @@ Every new control needs VoiceOver labels, Dynamic Type behavior, increased-contr
 
 Persist only the selected collection, copied local audio when local import wins, tempo-analysis cache, last reliable cadence for initial track selection, and debug evidence explicitly captured during development.
 
-Do not add an account, Samadhi backend, analytics, ad identifier, cloud listening history, or model call. If MusicKit wins, Apple Music authorization and network playback are the only new remote dependency. Update the product law from “local by default” to “no Samadhi backend; local analysis by default” in that branch.
+Do not add an account, Slipstream backend, analytics, ad identifier, cloud listening history, or model call. If MusicKit wins, Apple Music authorization and network playback are the only new remote dependency. Update the product law from “local by default” to “no Slipstream backend; local analysis by default” in that branch.
 
 ### Diagnostics and evidence
 

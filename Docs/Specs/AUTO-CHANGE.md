@@ -8,11 +8,11 @@ The exact patterns, sound files, and intensity bands are not approved. Nothing h
 
 ## What the workout exposed
 
-The August 17 workout proved that Auto can sense a supported cadence, settle on a target, and receive a matching Apple Music speed reply. Samay felt the music changing. He did not understand the change as a deliberate Samadhi action.
+The August 17 workout proved that Auto can sense a supported cadence, settle on a target, and receive a matching Apple Music speed reply. Samay felt the music changing. He did not understand the change as a deliberate Slipstream action.
 
 That is an interaction failure, not only a tuning problem. The music changes without a clear beginning, direction, or arrival. A later difference in song speed tells the runner that something happened, but it does not make the moment feel intentional.
 
-The workout mixed brisk incline walking, a short light jog, and substantial lifting. At the time the product rejected values below 120 steps per minute. The trace cannot tell which activity produced each low reading. Expanding Samadhi into rhythmic walking is a sound idea. Adapting music to lifting is not needed now because lifting has no continuous step rhythm for Auto to follow.
+The workout mixed brisk incline walking, a short light jog, and substantial lifting. At the time the product rejected values below 120 steps per minute. The trace cannot tell which activity produced each low reading. Expanding Slipstream into rhythmic walking is a sound idea. Adapting music to lifting is not needed now because lifting has no continuous step rhythm for Auto to follow.
 
 The retained diagnostic shows one confirmed song change. It does not say whether that boundary was natural or followed a user command. Current code may prepare a better next song, but it does not let Auto interrupt the current song. Do not describe this run as proof that Auto cut a song short.
 
@@ -73,7 +73,7 @@ Since 2026-11-02 songs change through Apple Music's own crossfade, set to four s
 
 ## Why this shape is stronger
 
-A completion sound alone comes too late to explain a multi-second speed ramp. A haptic at the first verified movement says that Samadhi has begun acting. The authored arrival says the change completed. Both events remain tied to something Apple Music actually did.
+A completion sound alone comes too late to explain a multi-second speed ramp. A haptic at the first verified movement says that Slipstream has begun acting. The authored arrival says the change completed. Both events remain tied to something Apple Music actually did.
 
 Haptics alone are not enough. The phone may be loose in a pocket, held differently, or unable to play a custom pattern. Apple also treats haptics as optional feedback. The paired sound carries the same direction through headphones. The haptic carries it when the sound is hard to hear.
 
@@ -107,7 +107,7 @@ Sending a cue is not playing one. The August 19 walk sent five start cues and th
 
 The engine reports its own lifecycle the same way: created, started, start failed, stopped with Apple's reason, reset, unsupported. Debug builds write every one of these into the run record as `autoFeedbackDelivery` and `hapticEngine` entries and show the last three cue outcomes on the hidden Debug screen. "Played" still says nothing about whether a pocket could feel it; that remains a physical judgment.
 
-Apple documents that the haptic engine can stop after an audio interruption or app suspension. Samadhi uses background audio, but that does not prove custom haptics survive phone lock in this app. The phone-lock case is a required test, not an assumption.
+Apple documents that the haptic engine can stop after an audio interruption or app suspension. Slipstream uses background audio, but that does not prove custom haptics survive phone lock in this app. The phone-lock case is a required test, not an assumption.
 
 References:
 
@@ -120,7 +120,7 @@ References:
 
 Create three coherent families, not a large pile of weak options. Each family includes faster, slower, and three size levels plus its paired arrival sound.
 
-The sound may come from a commissioned sound designer, original recording or synthesis, a licensed library asset that is substantially shaped for Samadhi, or offline generation used as sketch material. A generated first pass is not a finished asset. Preserve the source, rights, raw file, processing notes, and checksum for every finalist.
+The sound may come from a commissioned sound designer, original recording or synthesis, a licensed library asset that is substantially shaped for Slipstream, or offline generation used as sketch material. A generated first pass is not a finished asset. Preserve the source, rights, raw file, processing notes, and checksum for every finalist.
 
 The preferred final path is a small paid commission from an interaction sound designer using this brief and the physical prototype. ElevenLabs is useful for exploring material and vocabulary, not as the automatic source of the shipped sound.
 
@@ -132,7 +132,7 @@ The six arrival sounds are 48 kHz, mono, 16-bit, from 0.310 to 0.375 seconds. Ea
 
 Both sound paths are built and selectable at runtime: Core Haptics audio, where the sound is registered as an audio resource and played inside the pattern, and a local audio player holding a preloaded file. The phone comparison picks one.
 
-The audition screen is Debug only. It reaches the app through the `--feedback-audition` launch argument and the `Samadhi Feedback Audition` scheme. It offers family, direction, size, sound path, and separate sound and haptic toggles; buttons to play the start, the arrival, or both; and a 10-trial blinded mode with a visible seed and a copyable summary line carrying family, sound path, seed, and score. Release contains none of its strings or symbols.
+The audition screen is Debug only. It reaches the app through the `--feedback-audition` launch argument and the `Slipstream Feedback Audition` scheme. It offers family, direction, size, sound path, and separate sound and haptic toggles; buttons to play the start, the arrival, or both; and a 10-trial blinded mode with a visible seed and a copyable summary line carrying family, sound path, seed, and score. Release contains none of its strings or symbols.
 
 Test both Core Haptics custom audio and a small local audio player alongside real Apple Music. Choose from physical results. The implementation must not pause, duck, restart, or reroute the music, and the first cue must not arrive late.
 
@@ -156,6 +156,6 @@ No Simulator result can approve tactile quality, pocket recognition, sound quali
 
 ## Priority
 
-The transport and Finish pass is complete in software, and so is the first prototype of this feature. The next step is the physical comparison in the Physical acceptance section above, run from the checklist in [PHONE-CHECK.md](PHONE-CHECK.md).
+The transport and Finish pass is complete in software, and so is the first prototype of this feature. The next step is the physical comparison in the Physical acceptance section above, run from the checklist in [PHONE.md](../PHONE.md).
 
 Nothing in the prototype set becomes a product asset before that comparison chooses a family, a size scale, and a sound path. Setup, summary, icon, warehouse, and playlist-generation expansion all stay behind it.

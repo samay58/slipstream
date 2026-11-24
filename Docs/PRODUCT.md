@@ -1,113 +1,163 @@
-# Product ethos
+# Slipstream
+
+Slipstream is a native iPhone music player for running. It senses the runner's cadence and matches each song's tempo to it, so the music carries the stride instead of fighting it. The tagline is "music in stride."
 
 ## Promise
 
-**Music in stride.**
+Movement and music should feel like one calm system. The runner opens the app, presses Start, and begins moving. The music finds their rhythm, and the interface confirms the match and then gets out of the way.
 
-Slipstream should make movement and music feel like one calm system. The name is the moving air that pulls a runner along with almost no effort: absorbed attention, steady motion, reduced self-consciousness.
+What the app should create is absorbed attention, steady motion, and less self-consciousness. Success is not more workout data. It is a runner who forgets the app because they are inside the music.
 
-Runner opens app, presses Start, begins moving. Music finds their rhythm. Interface confirms lock, then withdraws.
+That means:
 
-## North star
+- A fast arrival into rhythm
+- A stable feel even when body data is noisy
+- Confidence without a constant stream of metrics
+- Attention that stays on the music
+- Safe, honest recovery when sensing or audio fails
 
-Slipstream is done for the first real product milestone when Samay can go for a normal outdoor run with one imported Apple Music playlist, hear an unmistakable response when rhythm changes, and feel his stride settle onto the music without thinking about the app.
+## The first milestone
 
-Done means:
+The first real product milestone is done when Samay can go for a normal outdoor run with one imported Apple Music playlist, hear an unmistakable response when his rhythm changes, and feel his stride settle onto the music without thinking about the app.
+
+Done means the app can:
 
 - Import one Apple Music playlist
-- Analyze enough tracks locally to build a usable queue
+- Analyze enough tracks on the phone to build a usable queue
 - Start a run in one or two clear actions
 - Sense cadence from one declared phone placement
 - Choose a track whose native pulse fits the requested rhythm
-- Apply fine playback-rate correction inside a declared envelope that passes physical listening
-- Let the runner choose a manual BPM without leaving the run
+- Correct playback rate finely inside a declared range that passes physical listening
+- Let the runner set a manual BPM without leaving the run
 - Make a deliberate rhythm change audible enough to verify without watching a number
 - Keep audio stable, pitch-stable, and continuous through lock, pause, resume, and route recovery
-- Show honest progress and tempo-matched summary
-- Make failure states calm, legible, and recoverable
+- Show honest progress and a tempo-matched summary
+- Keep failure states calm, legible, and recoverable
 - Pass one 20-minute outdoor run with listening notes and saved evidence
 
-Done does not mean perfect recommendation, a claim of beat lock without phase evidence, exhaustive music support, dashboard history, GPS fitness tracking, social features, or a polished App Store business. Those can wait. First milestone earns the right to exist by making one real run feel meaningfully better.
+It does not mean perfect recommendations, a beat-lock claim without phase evidence, support for every music source, run history, GPS fitness tracking, social features, or a polished App Store business. The first milestone earns the right to exist by making one real run feel better. A feature that does not improve that run, lower its risk, or make the app easier to trust during it waits.
 
-If a proposed feature does not improve that run, reduce risk in that run, or make the app easier to trust during that run, defer it.
-
-## Felt outcome
-
-Success is not more workout data. Success is runner forgetting app and feeling inside music.
-
-Experience should create:
-
-- Fast arrival into rhythm
-- Stable sensation despite noisy body data
-- Clear confidence without constant metrics
-- Music-led attention
-- Safe, honest recovery when sensing or audio fails
+The live checklist toward this milestone is in [PLAN.md](PLAN.md), and what the phone has proved so far is in [STATUS.md](STATUS.md).
 
 ## Product laws
 
 ### One action before motion
 
-Returning runner starts with one deliberate action.
+A returning runner starts with one deliberate action.
 
 ### Music first
 
-Cadence is input, not content. Song, atmosphere, and rhythm outrank telemetry.
+Cadence is an input, not the content. The song, its atmosphere, and its rhythm outrank telemetry.
 
 ### Confirm, then withdraw
 
-UI becomes visible during preparation, uncertainty, and direct manipulation. Stable playback should feel quiet.
+The interface shows itself during preparation, during uncertainty, and while the runner is touching a control. Stable playback should feel quiet.
 
 ### Understandable without looking
 
-An automatic music change must make sense when the phone is locked or in a pocket. Do not depend on temporary screen text. Use sparse touch and sound only for meaningful, verified changes, then return attention to the music.
+An automatic music change has to make sense when the phone is locked or in a pocket, so it cannot depend on text that flashes on screen. Sparse touch and sound mark only meaningful, verified changes, and then attention returns to the music.
 
 ### Control without clutter
 
-Automatic matching is the default. When it feels wrong, the runner can reveal one precise rhythm control, correct it, and return attention to the music. Manual control must not become a settings screen or a permanent telemetry panel.
+Automatic matching is the default. When it feels wrong, the runner can reveal one precise rhythm control, correct it, and go back to the music. Manual control never grows into a settings screen or a permanent telemetry panel.
 
 ### Continuity over spectacle
 
-Objects transform in place. Motion explains state. No transition competes with music.
+Objects transform in place, and motion explains a change of state. No transition competes with the music.
 
 ### Stability over responsiveness theater
 
-Raw sensor changes never drive frantic UI. Product should feel composed when input is noisy.
+Raw sensor changes never drive a frantic interface. The app stays composed when its input is noisy.
 
 ### Honest capability
 
-Never imply beat-perfect adaptation, real cadence quality, or audio quality before physical proof exists.
+The app never implies beat-perfect adaptation, real cadence quality, or audio quality before physical proof exists.
 
 ### No Slipstream backend
 
-No Slipstream account, cloud backend, remote listening history, analytics SDK, ad identifier, or model call. Music provider access is allowed only when the runner selects it. Tempo analysis and Slipstream persistence remain local.
+There is no Slipstream account, cloud backend, remote listening history, analytics SDK, ad identifier, or model call. The app reaches a music provider only when the runner selects one. Tempo analysis and everything Slipstream saves stay on the phone.
 
 ### No product inflation
 
-No dashboard, map, coaching layer, streak, social surface, recommendation feed, or tab bar. Central interaction must carry product.
+There is no dashboard, map, coaching layer, streak, social surface, recommendation feed, or tab bar. The central interaction has to carry the product.
 
-## Design character
+## What stays out
 
-Tactile, restrained, native, and at home in the dark. Depth signals hierarchy, not decoration.
+Core Motion and the Apple Music player run in the normal flow whenever an imported collection has ready tracks. Spotify, GPS, maps, pace, distance, lifting adaptation, coaching, plans, social features, accounts, analytics, subscriptions, and any backend stay out of the product build.
+
+## Name and look
+
+### The name
+
+A slipstream is the pocket of moving air behind a runner or rider that pulls them along with almost no effort. That is how the app should feel: you run in the music's slipstream. The word also holds "stream," and it names flow without naming meditation. "In step" is a lowercase run metric, not a second brand.
+
+The app was first called Samadhi. The code, the project, and the repository now say Slipstream, and three things keep the old name on purpose. They are the bundle identifier `com.samaydhawan.Samadhi`, the phone's data folder `Application Support/Samadhi` (one constant in `App/PhoneDataFolder.swift`), and the provisioning profile named Samadhi Development. The phone holds the only copy of the selected playlist and its analysis, and changing the identifier or the folder would strand that data. Older records in `Docs/Archive/` and `Evidence/` use Samadhi for the same product.
+
+### Character
+
+The app is tactile, restrained, native, and at home in the dark. Depth signals hierarchy and is never decoration.
 
 - One visual owner at a time
 - Open typography instead of passive cards
 - Glass only for raised interactive controls
-- Full-screen atmosphere that supports music identity
-- Motion frozen or reduced when tempo aperture owns attention
-- Readable text across palette, Dynamic Type, high contrast, and Reduce Motion
+- A full-screen atmosphere that supports the music's identity
+- Motion frozen or reduced when the tempo wheel owns attention
+- Readable text across the palette, Dynamic Type, high contrast, and Reduce Motion
 
-Design benchmark research lives in [DESIGN-BENCHMARKS.md](DESIGN-BENCHMARKS.md).
+The products that set the craft bar are reviewed in [DESIGN-BENCHMARKS.md](Research/DESIGN-BENCHMARKS.md).
 
-## Current product test
+### Color
 
-The interaction is calm and the mechanical loop works, but the core feeling is not yet proven. A fingerprinted workout confirmed that fresh delayed phone readings can settle Auto and that Apple Music can return the requested speed. It also exposed a practical gap: most retained movement readings sat in the brisk-walking range below the old 120 SPM floor, and Samay found audible changes jarring and unexplained.
+Two hues come from Phoenix Workbench, and each one means something.
 
-The current software candidate accepts steady movement from 90 through 210 SPM. Walking needs five seconds of steady evidence. Running can settle after the motion filter locks. Broken gym movement does not build a target, and raw cadence cannot change the music before the separate Auto target settles. The next physical check must prove that this feels useful during clean walking and does not react to lifting.
+- Lime `#D8F24C` means go and live. It fills the primary action and marks the music following the runner: the wheel's center cap, the progress arc, and the word Auto.
+- Lilac means the runner took over. It marks Manual and the hold that ends a run. It is `#6E5C9E` on paper and on the hold's fill, and `#B8A9E8` on the dark ground. In the icon and the mark the lilac sphere is identity and carries no state.
+- Moss `#566400` replaces lime on any thin line in light mode, because lime on paper has a contrast of about 1.1 to 1. On paper, lime only ever appears as a fill with dark text on it.
+- The neutrals are Workbench paper `#F4F0E7` with ink `#15170F`, and near-black `#0B0D08` with ink `#F2F1E6`. Both lean slightly green so they agree with the lime.
 
-The run controls are now three separate interactive glass circles with a larger tinted primary and a quiet hold-to-finish below them, after a glass capsule bar read as a slab on the phone, and the two causes of the reported Finish border overflow were reproduced on video and removed. Every confirmed song change records whether it was a natural end, an outside change, or an explicit Previous or Next. The directional Auto feedback from the workout complaint now exists as a prototype: the app decides when one cue is valid and can play three haptic families with paired arrival sounds. None of that has been felt or heard. Press feel, tactile recognition, sound quality against real music, and locked-screen delivery are all unproved, and no family has been chosen.
+There is no orange, apricot, clay, plum, or olive anywhere. `PaletteContrastTests` holds every text and line pairing to 4.5 to 1.
 
-The current candidate can change one song from 85 to 115 percent of normal speed. This gives Auto and Manual more useful reach without changing songs as often. The app ramps an automatic change by at most two percentage points per second, so moving from normal speed to either endpoint takes at most eight seconds. Correct commands and Apple Music read-back are software and device checks. Clean sound at the new endpoints still requires Samay's listening approval.
+### Dark mode
 
-## Current exclusions
+Setup, recovery, and the summary follow the system appearance. The run screens are always dark, like Apple's Workout app, because lime on black reads at arm's length in sun and the glass has more to bend. `SlipstreamColor` names colors by role, so a new screen gets both appearances without extra work.
 
-Core Motion and the Apple Music adapter now enter the normal run flow when an imported collection has ready tracks. Spotify, GPS, maps, pace, distance, lifting adaptation, coaching, plans, social features, accounts, analytics, subscriptions, and backend remain outside the useful product build.
+Behind every screen sits a field of two soft radial lights over the ground, lime low on the left and lilac high on the right, under a still layer of faint noise. The app draws them together at high precision, so the noise lands before the colors are rounded to the display's 8 bits. That is true dithering, and it removes the banding that dark gradients otherwise show.
+
+### App icon
+
+The icon is a polished lilac sphere on a full field of lime, with bold lines of air parting around it and swaying behind it. Lilac and lime are the two brand colors, and the lime field is the loudest thing on a Home Screen. The lines are real flow past a sphere, which makes it a literal slipstream, and the wake's left and right sway is the rhythm of a stride.
+
+`Scripts/render-icon.py` draws all three versions from code, so a change is a number and a rerun, and no image model is involved. Light is ink on lime, dark is lime on near-black, and tinted is a grayscale of the light version. Samay approved it on his phone on 2026-11-05. Every earlier direction is in `Evidence/Brand/`.
+
+### In-app mark
+
+`BrandMark` reduces the icon to one lilac sphere with four bold lines streaming behind it, drawn natively so it stays sharp at 38 points. The lines are lime in dark mode and ink in light mode. Nothing sits ahead of the sphere, because lines wrapped around it read as an eye.
+
+### The playlist map
+
+The signature of the interface is the map a playlist draws of itself. Each song the app reads draws one contour line whose ripple comes from its measured tempo, and the progress line is a string the same songs pluck. The map stays thin and in the field's own colors. It frames the playlist name and never crosses it.
+
+### The speaker
+
+The tempo wheel is a speaker driver seen head on, under a clear glass lens, with a low light beneath it. It has thin ribs, one domed center cap, and no photo-real detail. It is drawn in the field's own ink so the field stays visible through it, and it pulses only at the music's current tempo. The cap turns lime only once the tempo has matched, so the one bright thing on the screen means something.
+
+### Repository cover
+
+`Brand/GitHub-Cover.png` shows the mark, the name, and the tagline over a contour map in the dark palette. The contour tempos in it are illustrative.
+
+## Glossary
+
+Product, code, tests, and evidence use these terms the same way.
+
+| Term | Meaning |
+| --- | --- |
+| Cadence | The runner's stable steps per minute. The app senses it from movement and keeps it separate from any requested musical rhythm. |
+| Requested musical BPM | The rhythm Slipstream is trying to produce. In Auto it comes from stable cadence. In Manual it comes straight from the runner. |
+| Native pulse | One plausible half-time, full-time, or double-time reading of a track's analyzed tempo. A track can have more than one useful reading, but only one drives a given match. |
+| Track fit | How little a track has to be stretched to reach the requested musical BPM inside the quality envelope. Good track fit is the coarse layer of adaptation. |
+| Tempo match | Music and cadence share the same frequency within the documented tolerance. It says nothing about a beat and a footfall landing at the same instant. |
+| Beat lock | The music's beat positions and the runner's footfalls line up. Slipstream must measure end-to-end phase and latency before it makes this claim. |
+| Felt synchronization | The runner hears the tempo respond and settles their steps onto the music without trying. This is the product outcome. Tempo match is evidence toward it and never a substitute. |
+| Quality envelope | The playback-rate range that passed physical listening on the supported player and audio route. A successful rate write does not widen it. |
+| Auto follows | Slipstream follows reliable cadence, ignores sensor noise, chooses compatible music, and makes restrained corrections. |
+| Manual leads | The runner declares a musical BPM. Slipstream chooses compatible music and applies bounded correction without inventing a measured cadence. |

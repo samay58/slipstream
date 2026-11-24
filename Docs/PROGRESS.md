@@ -227,7 +227,7 @@
 - Made coarse compatible-track selection plus fine rate correction the production mechanic
 - Added a source-neutral track-fit planner with deterministic half-time, full-time, double-time, quality-envelope, source-order, and retention tests
 - Added a debug-only blinded 0.92 versus 1.08 comparison with recorded answers, rate read-back, and optional wider endpoints
-- Saved the sourced mechanics and evidence thresholds in `ADAPTIVE-AUDIO-PLAYBOOK.md`
+- Saved the sourced mechanics and evidence thresholds in ADAPTIVE-AUDIO-PLAYBOOK.md, now `Docs/Research/ADAPTIVE-AUDIO.md`
 - Passed formatter lint, 67 package tests, 9 app-model tests, and 9 UI tests on the resulting tree
 - Consolidated the findings into one prioritized execution spec with explicit pass, pivot, evidence, craft, and milestone-completion gates
 
@@ -653,10 +653,10 @@ This checkpoint recorded a passing local candidate before its exact-profile buil
 
 ## 2026-11-02. Repository sweep and Mac Mini loop
 
-- Removed 112 superseded images, logs, and export manifests from the tree, kept in the [evidence archive](https://github.com/samay58/samadhi/releases/tag/evidence-archive-2026-08-19), and wrote the evidence policy in `Evidence/README.md`
+- Removed 112 superseded images, logs, and export manifests from the tree, kept in the [evidence archive](https://github.com/samay58/slipstream/releases/tag/evidence-archive-2026-08-19), and wrote the evidence policy in `Evidence/README.md`
 - Rewrote Git history to remove those files, which took a fresh clone from 208 MB to about 25 MB. The original history is backed up in the same release, and `Docs/Archive/COMMIT-MAP.txt` maps old hashes to new
 - Moved finished handoffs, reviews, closed gates, and old device ledgers to `Docs/Archive/`
-- Cut `STATUS.md`, `PLAN.md`, `TESTING.md`, and `DEVICE_RUNBOOK.md` back to current truth
+- Cut `STATUS.md`, `PLAN.md`, `TESTING.md`, and DEVICE_RUNBOOK.md, now `Docs/PHONE.md`, back to current truth
 - Replaced the MacBook note with a machine-neutral `DEVELOPMENT.md` and scripted the build, Simulator, and phone loop
 - Fixed recovery dead ends, so every audio recovery names its cause and can end the run, and several timing bugs in the run shell
 - Set song changes to Apple Music's four-second crossfade. When and why a song changes stays with the reducer and the player

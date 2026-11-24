@@ -88,7 +88,7 @@ Automatic signing may still choose the wildcard team profile even when the exact
 
 ## Policy before adapters
 
-Tempo normalization, compatibility, rate bounds, ramping, deadband, confidence loss, and honest measurement live in SamadhiDomain. Core Motion emits source-neutral cadence events. Production callbacks still enter the reducer through the app shell.
+Tempo normalization, compatibility, rate bounds, ramping, deadband, confidence loss, and honest measurement live in SlipstreamDomain. Core Motion emits source-neutral cadence events. Production callbacks still enter the reducer through the app shell.
 
 ## Imported collection boundary
 
@@ -100,7 +100,7 @@ The shared strict catalog resolver prefers ISRC or documented equivalent identit
 
 ## Production body-to-music composition
 
-Imported ready tracks compose `CoreMotionCadenceProvider` and `AppleMusicPlaybackController` in the normal app. Deterministic music and cadence remain available only for repeatable fixtures, previews, and tests. The `Samadhi Apple Music Core Loop` scheme remains a focused diagnostic path around a validated tempo fixture.
+Imported ready tracks compose `CoreMotionCadenceProvider` and `AppleMusicPlaybackController` in the normal app. Deterministic music and cadence remain available only for repeatable fixtures, previews, and tests. The `Slipstream Apple Music Core Loop` scheme remains a focused diagnostic path around a validated tempo fixture.
 
 The first physical walk averaged 142 SPM. The original 170.25 BPM fixture could not reach that cadence inside the safe 0.94 through 1.06 rate range, so the honest summary reported 0 percent tempo matched. A second check with the 139.5 BPM fixture produced no perceptible speed change; its expected rate near 1.02 was too subtle to distinguish from no response.
 
@@ -216,7 +216,7 @@ The August 17 workout made the gap concrete. Samay felt Auto working, but the ch
 
 The accepted later direction is one identified Auto transition with two sparse moments. The first matching Apple Music reply produces a short faster or slower haptic. A final matching reply produces one quiet authored sound with a soft terminal haptic. Direction comes from the pattern's timing and shape. No more than three coarse strength levels express reachable change size.
 
-The software half of this now exists. A reducer-owned transaction decides when a cue is valid, and `AutoFeedbackService` owns the Core Haptics engine, its stopped and reset handlers, the registered audio resources, and the fallback to a local audio player. The exact AHAP patterns, sound family, Core Haptics audio path, fallback, and intensity bands stay unapproved. They need physical comparison with the phone in a pocket, the screen locked, and real music playing. The full contract lives in [AUTO-CHANGE-INTERACTION-SPEC.md](AUTO-CHANGE-INTERACTION-SPEC.md).
+The software half of this now exists. A reducer-owned transaction decides when a cue is valid, and `AutoFeedbackService` owns the Core Haptics engine, its stopped and reset handlers, the registered audio resources, and the fallback to a local audio player. The exact AHAP patterns, sound family, Core Haptics audio path, fallback, and intensity bands stay unapproved. They need physical comparison with the phone in a pocket, the screen locked, and real music playing. The full contract lives in [AUTO-CHANGE.md](Specs/AUTO-CHANGE.md).
 
 What remains is physical. Nothing in the prototype set has been felt or heard: tactile character through a pocket, blinded direction recognition, how the arrival sounds sit against real Apple Music, whether music ducks or gaps, locked-screen delivery, and survival through an interruption and an engine reset on a device.
 
@@ -262,7 +262,7 @@ None of this is a product asset. The preferred final path is still a small paid 
 
 `AutoFeedbackService` owns the engine, not the views and not the reducer. It starts one Core Haptics engine lazily with audio allowed, keeps stopped and reset handlers, drops cached players and re-registers audio resources on a reset, and stays silent on hardware without haptics while the sound still plays through a local player. The app configures no `AVAudioSession` category, mode, or active state anywhere, so Samadhi asks for no ducking; the only session use is reading route and interruption notifications.
 
-The audition screen is Debug only. It reaches the app through the `--feedback-audition` launch argument and the `Samadhi Feedback Audition` scheme, and it plays patterns by hand so a person can compare them. Release contains none of its strings or symbols. The prototype files themselves are still packaged in Release, which is the honest state of a prototype set that has not been chosen from yet.
+The audition screen is Debug only. It reaches the app through the `--feedback-audition` launch argument and the `Slipstream Feedback Audition` scheme, and it plays patterns by hand so a person can compare them. Release contains none of its strings or symbols. The prototype files themselves are still packaged in Release, which is the honest state of a prototype set that has not been chosen from yet.
 
 ## Catalog ties are broken, not rejected
 
@@ -347,7 +347,7 @@ The raw files are personal and stay out of Git. What a run teaches goes in `Evid
 
 Samay asked for the green and lilac from Phoenix Workbench, for the orange to go, and for dark mode to look outstanding on every screen. The app had ignored the system appearance until now. The green is the Workbench lime `#D8F24C`, read from the live pages, where it is the only green large enough to notice.
 
-Each hue carries a meaning, so color stays a signal: lime means go and live, and lilac means the runner took over. Thin lines use moss in light mode because lime on paper has almost no contrast. `Docs/BRAND.md` has the values.
+Each hue carries a meaning, so color stays a signal: lime means go and live, and lilac means the runner took over. Thin lines use moss in light mode because lime on paper has almost no contrast. `Docs/PRODUCT.md` has the values.
 
 The run screens are always dark, and everything else follows the system. Following the system on the run screen was rejected because a pale run screen has less contrast in sun, the glass has less to bend, and a light speaker would need a second drawing for no gain. Apple's Workout app makes the same choice.
 
@@ -364,6 +364,8 @@ Samay rejected the first pair offered, Crest and Lilt, as lame, liked a lime sto
 Slipstream names the feeling of being carried with almost no effort, and at least three meditation apps on the App Store already use the name Samadhi.
 
 Only what a person sees changed: the display name, on-screen copy, permission text, and the Debug strings. The bundle identifier, the modules, the repository, and the `Samadhi` data folder on the phone stay, because renaming the identifier or the folder would cost the phone its only copy of the selected playlist and analysis.
+
+On 2026-11-24 the code took the name as well. The package, modules, test targets, project, scheme, app file, Info plist, launch arguments, environment variables, and Mac run archive now say Slipstream, and the GitHub repository moves to `samay58/slipstream`. The bundle identifier `com.samaydhawan.Samadhi` and the phone's `Application Support/Samadhi` folder keep the old name for the reason above, and the folder is now one constant in `App/PhoneDataFolder.swift`. The provisioning profile keeps its name, Samadhi Development, because Apple issued it for that identifier.
 
 Other names considered: Second Wind, Groove, Mushin, Laya, Rubato, Pocket, Tala, Locked In, Footfall, Iamb, Downbeat. Other icons considered, all in `Evidence/Brand/2026-11-05-icon-explorations.jpg`: Stone, Wake, Wave, Enso, Grooves, River, Draft, Runner, Footnotes, Ribbon, Cycle, Metronome, Crest, Driver, Phase, Lockstep, Loop, and two bars for Iamb.
 
