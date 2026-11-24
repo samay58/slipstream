@@ -52,7 +52,7 @@ Do not redesign the app or build playlist generation before imported music and t
 ## Testing debt
 
 - 32 interface tests still launch the app. Many check a fixed setup state and could move to `ScreenRenderingTests`, which would leave about 5 for real touch and the whole flow. Move them one group at a time, and make sure each moved test still catches what the old one caught.
-- `ScreenRenderingTests.finishKeepsItsPlaceWhenItArms` failed once on 2026-11-24 when it was the first screen drawn in a full gate, then passed three times alone. If it fails again, make the first drawn screen wait for its accessibility tree before searching it.
+- Two tests that reach for `finish-run` failed once each on 2026-11-24 and passed on rerun: `ScreenRenderingTests.finishKeepsItsPlaceWhenItArms` as the first screen drawn in a gate, and `RunFlowUITests.testFinishHoldReleasedEarlyKeepsTheRunThenCompletes`, where the run controls had already withdrawn before a busy Simulator clone tapped. Make both wait for the controls to be present, or reveal them, before acting.
 - Direct drawing cannot set Reduced Transparency, because the system offers no override for it. Glass under that setting needs a look on a real phone.
 
 ## Debt before any public release
