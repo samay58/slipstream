@@ -16,6 +16,8 @@ The gate passed again on 2026-11-05 with 210 package tests, 68 app-model tests, 
 
 The gate passed again on 2026-11-24 after the code took the name Slipstream, with every test passing, at source fingerprint `4317050c66f37ba2e65e62e963d91836c7e20f28a4746dfd718d5083001760eb`. The run before the rename failed once in `ScreenRenderingTests.finishKeepsItsPlaceWhenItArms`: the first drawn environment could not find `finish-run`. The suite then passed three times in a row on its own, so the failure is a cold start in the first screen drawn, not a layout change. The gate's skip check now includes the Xcode version, so a toolchain update always reruns it.
 
+Later the same day both finish-run flakes got fixes, and the gate passed at the same source fingerprint. Direct screen lookups now wait up to two seconds for an element to enter the accessibility tree. The interface tests' `armFinish` reads Finish's position from one snapshot and taps that spot, so controls that withdraw on a busy Simulator clone cost a retry instead of failing the test with "No matches found".
+
 ## Coverage
 
 Domain tests cover:

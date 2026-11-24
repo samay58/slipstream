@@ -52,19 +52,35 @@ class SlipstreamUITestCase: XCTestCase {
         XCTFail("transport controls never became visible")
     }
 
-    // Arming can lose the race with the control timeout, so the tap retries until it takes.
+    // Arming can lose the race with the control timeout, so the tap retries until it takes. A busy
+    // Simulator clone can let the controls withdraw between finding Finish and tapping it, and a
+    // tap on a vanished element fails the test outright. One snapshot reads where Finish stands,
+    // and a tap on that spot only costs another round when the controls are already gone.
 
     fileprivate func armFinish() {
-        let finish = app.buttons["finish-run"]
         let hold = app.buttons["hold-to-finish"]
         for _ in 0..<4 {
             if hold.exists { return }
             refreshTransport()
-            guard finish.waitForExistence(timeout: 3) else { continue }
-            finish.tap()
+            guard let finish = frameIfPresent("finish-run") else { continue }
+            app.coordinate(withNormalizedOffset: .zero)
+                .withOffset(CGVector(dx: finish.midX, dy: finish.midY))
+                .tap()
             if hold.waitForExistence(timeout: 5) { return }
         }
         XCTFail("Finish never armed")
+    }
+
+    private func frameIfPresent(_ identifier: String) -> CGRect? {
+        func search(_ node: XCUIElementSnapshot) -> CGRect? {
+            if node.identifier == identifier { return node.frame }
+            for child in node.children {
+                if let frame = search(child) { return frame }
+            }
+            return nil
+        }
+        guard let root = try? app.snapshot() else { return nil }
+        return search(root)
     }
 
     fileprivate func assertCloseTargetClearsDial(close: XCUIElement, dial: XCUIElement) {

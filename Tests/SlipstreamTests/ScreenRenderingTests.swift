@@ -87,8 +87,15 @@ private final class HostedScreen {
         return window
     }
 
-    func element(_ identifier: String) -> NSObject? {
-        find(identifier, in: window, depth: 0)
+    // The first screen drawn in a fresh test host can take longer than the settle time to build its
+    // accessibility tree, so a lookup waits for the element before calling it missing.
+    func element(_ identifier: String, timeout: TimeInterval = 2) -> NSObject? {
+        let deadline = Date(timeIntervalSinceNow: timeout)
+        while true {
+            if let found = find(identifier, in: window, depth: 0) { return found }
+            if Date() >= deadline { return nil }
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.05))
+        }
     }
 
     private func find(_ identifier: String, in object: NSObject, depth: Int) -> NSObject? {
