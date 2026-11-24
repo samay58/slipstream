@@ -8,9 +8,11 @@ project_hash() {
     -exec shasum -a 256 {} + | LC_ALL=C sort -k2 | shasum -a 256
 }
 
-# Everything that can change a result. A push that only touches docs has nothing new to prove.
+# Everything that can change a result, including the toolchain, so an Xcode update reruns the gate.
+# A push that only touches docs has nothing new to prove.
 gate_stamp() {
   {
+    xcodebuild -version
     ./Scripts/source-fingerprint.sh
     git ls-files -z Tests Scripts Packages/SlipstreamKit/Tests Packages/SlipstreamKit/Tools .swift-format |
       xargs -0 shasum -a 256
